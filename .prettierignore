@@ -1,0 +1,33 @@
+# Ignore node modules
+node_modules/
+backend/node_modules/
+frontend/react-app/node_modules/
+
+# Ignore build outputs
+dist/
+build/
+out/
+.next/
+.vite/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# Ignore git folder
+.git/
+
+# Ignore coverage
+coverage/
+
+# Ignore Vite/CRA build caches
+frontend/react-app/dist/
+frontend/react-app/build/
+
+# Ignore local settings
+.vscode/
+.idea/
+

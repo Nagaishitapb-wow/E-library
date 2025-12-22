@@ -1,0 +1,187 @@
+/* HERO SECTION */
+.hero {
+  background: var(--gradient-main);
+  padding: 60px 20px 70px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(to top, var(--bg-dark), transparent);
+}
+
+.hero h1 {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  background: linear-gradient(to right, #fff, #e2e8f0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* BOOK SECTION */
+.book-section {
+  padding: 0 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.book-section h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.book-section h2::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 30px;
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+/* GRID LAYOUT */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 35px;
+}
+
+/* BOOK CARD */
+.book-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.book-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.book-card img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.book-card:hover img {
+  transform: scale(1.05);
+}
+
+.book-card h4 {
+  padding: 15px 15px 5px;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-main);
+}
+
+.book-card .author {
+  padding: 0 15px 15px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.book-card .btn {
+  width: calc(100% - 30px);
+  margin: 0 15px 20px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  display: block;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.book-card:hover .btn {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+/* NAVBAR Styles */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+}
+
+.nav nav {
+  display: flex;
+  gap: 30px;
+}
+
+.nav nav a {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  position: relative;
+  padding: 5px 0;
+}
+
+.nav nav a:hover {
+  color: var(--text-main);
+}
+
+.nav nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.nav nav a:hover::after {
+  width: 100%;
+}

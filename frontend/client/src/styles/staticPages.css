@@ -1,0 +1,61 @@
+.static-page {
+    padding: 80px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    min-height: 60vh;
+}
+
+.static-page h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: var(--text-main);
+    border-bottom: 2px solid var(--primary);
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.static-page .content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #cad4e0;
+}
+
+.static-page .content p {
+    margin-bottom: 20px;
+}
+
+.static-page .content h3 {
+    margin: 40px 0 20px;
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+.static-page .content ul {
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.static-page .content ul li {
+    margin-bottom: 10px;
+}
+
+.faq-item {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.faq-item h4 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.contact-form-placeholder {
+    background: var(--bg-card);
+    padding: 30px;
+    border-radius: var(--radius);
+    text-align: center;
+    border: 1px solid var(--primary);
+}

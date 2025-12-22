@@ -1,0 +1,245 @@
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+    position: relative;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    color: var(--text-main);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.btn-logout {
+    padding: 8px 16px;
+    border: 1px solid var(--secondary);
+    background: transparent;
+    color: var(--secondary);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background: var(--secondary);
+    color: white;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-login {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+}
+
+.btn-login:hover {
+    color: var(--primary);
+}
+
+.btn-signup {
+    background: var(--primary);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-signup:hover {
+    background: var(--primary-hover);
+}
+
+/* NOTIFICATIONS */
+.nav-notif {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.notif-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.notif-btn:hover {
+    transform: scale(1.1);
+}
+
+.notif-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 2px solid #0f172a;
+}
+
+.notification-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 300px;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    z-index: 1001;
+}
+
+.dropdown-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-header h3 {
+    font-size: 0.95rem;
+    margin: 0;
+    color: white;
+}
+
+.mark-all-btn {
+    background: transparent;
+    border: none;
+    color: #3b82f6;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.notifications-list {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.notification-item.unread {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.notification-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.notification-item p {
+    margin: 0 0 4px 0;
+    font-size: 0.85rem;
+    color: #e2e8f0;
+}
+
+.notification-item span {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.no-notif {
+    padding: 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.close-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.close-btn:hover {
+    color: white;
+}

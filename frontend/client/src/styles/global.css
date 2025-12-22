@@ -1,0 +1,166 @@
+/* ======================================
+   GLOBAL STYLING - MODERN CLEAN UI
+====================================== */
+
+body {
+  margin: 0;
+  font-family: "Inter", Arial, sans-serif;
+  background: linear-gradient(135deg,
+    #667eea 0%,
+    #764ba2 50%,
+    #6b73ff 100%);
+  height: 100vh;
+  color: #fff;
+}
+
+/* Center wrapper for all pages */
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Card UI for login/signup forms */
+.auth-card {
+  background: #ffffff;
+  width: 400px;
+  padding: 40px;
+  border-radius: 16px;
+  color: #111;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  animation: fadeInUp 0.8s ease;
+}
+
+.auth-card h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+}
+
+/* Form Styling */
+.auth-input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1.5px solid #cfcfcf;
+  font-size: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.auth-input::placeholder {
+  color: #8f8f8f;
+  opacity: 0.9;
+}
+
+.auth-input:focus {
+  border-color: #2e78ff;
+  box-shadow: 0 0 6px rgba(46, 120, 255, 0.45);
+  outline: none;
+}
+
+/* Button UI */
+.auth-btn {
+  width: 100%;
+  background: #2e78ff;
+  padding: 12px;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 5px;
+  transition: 0.25s;
+}
+
+.auth-btn:hover {
+  background: #0043c2;
+  transform: scale(1.04);
+}
+
+/* Error message */
+.error {
+  color: #c20000;
+  font-size: 14px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Dashboard Welcome */
+.dashboard-box {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  padding: 40px 60px;
+  border-radius: 16px;
+  box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.25);
+  animation: fadeIn 0.8s ease-out;
+}
+
+.dashboard-box h1 {
+  font-size: 34px;
+  margin-bottom: 15px;
+}
+
+.reset-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  /* space between elements */
+}
+
+.reset-input {
+  width: 280px;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.reset-input:focus {
+  border-color: #2563ff;
+}
+
+.reset-btn {
+  background: #2563ff;
+  padding: 9px 18px;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 4px;
+  transition: .2s;
+}
+
+.reset-btn:hover {
+  background: #1d4ed8;
+}
+
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

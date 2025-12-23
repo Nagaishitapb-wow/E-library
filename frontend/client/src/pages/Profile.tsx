@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUserProfile, updateUserProfile, changePassword } from "../api/user";
+import { validatePassword } from "../utils/validation";
 import { toast } from "react-toastify";
 import "../styles/profile.css";
 
@@ -79,8 +80,9 @@ export default function Profile() {
             return;
         }
 
-        if (newPassword.length < 6) {
-            toast.error("Password must be at least 6 characters");
+        const pwdError = validatePassword(newPassword);
+        if (pwdError) {
+            toast.error(pwdError);
             return;
         }
 

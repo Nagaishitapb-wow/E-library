@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { validatePassword } from "../utils/validation";
 import axios from "axios";
 import "../styles/global.css";
 
@@ -18,13 +19,6 @@ export default function ResetPassword() {
     alert("Password reset successful!");
   }
 
-  function validatePassword(pwd: string): string | null {
-  if (pwd.length < 8) return "Password must be at least 8 characters";
-  if (!/[A-Z]/.test(pwd)) return "Password must contain at least one uppercase letter";
-  if (!/[0-9]/.test(pwd)) return "Password must contain at least one number";
-  if (!/[!@#$%^&*]/.test(pwd)) return "Password must contain a special character (!@#$%^&*)";
-  return null; // means valid
-}
 
 
   return (
@@ -40,7 +34,7 @@ export default function ResetPassword() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          {pwdError && <p style={{color:"red"}}>{pwdError}</p>}
+          {pwdError && <p style={{ color: "red" }}>{pwdError}</p>}
           <button disabled={!!pwdError}>Update Password</button>
 
         </form>

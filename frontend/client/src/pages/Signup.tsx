@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { signup } from "../api/auth";
+import { validatePassword } from "../utils/validation";
 import { useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 import "../styles/global.css";
@@ -56,13 +57,6 @@ const Signup = () => {
     return e.response?.data?.message ?? "Something went wrong";
   }
 
-  function validatePassword(pwd: string): string | null {
-    if (pwd.length < 8) return "Password must be at least 8 characters";
-    if (!/[A-Z]/.test(pwd)) return "Password must contain at least one uppercase letter";
-    if (!/[0-9]/.test(pwd)) return "Password must contain at least one number";
-    if (!/[!@#$%^&*]/.test(pwd)) return "Password must contain a special character (!@#$%^&*)";
-    return null; // means valid
-  }
 
   return (
     <div className="center-container">

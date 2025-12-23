@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // 🔥 BASE URL — required or API breaks
-const API = "http://localhost:4000/api/borrow";
+const API = "https://e-library-jtx2.onrender.com/api/borrow";
 
 // Borrow a book
 export async function borrowBook(bookId: string) {

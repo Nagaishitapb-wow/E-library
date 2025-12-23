@@ -7,7 +7,7 @@ export default function ForgotPassword() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await axios.post("http://localhost:4000/api/auth/forgot-password", { email });
+    await axios.post("https://e-library-jtx2.onrender.com/api/auth/forgot-password", { email });
     alert("Reset email sent!");
   }
 

@@ -19,7 +19,7 @@ export default function Home() {
   useEffect(() => {
     console.log("📡 Fetching books...");
 
-    axios.get("http://localhost:4000/api/books")
+    axios.get("https://e-library-jtx2.onrender.com/api/books")
       .then(res => {
         console.log("📘 Books received:", res.data);
         setBooks(res.data);

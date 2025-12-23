@@ -21,7 +21,7 @@ export default function Navbar() {
 
     const fetchUnreadCount = async () => {
         try {
-            const res = await axios.get("http://localhost:4000/api/notifications", {
+            const res = await axios.get("https://e-library-jtx2.onrender.com/api/notifications", {
                 withCredentials: true
             });
             const unread = res.data.filter((n: any) => !n.isRead).length;

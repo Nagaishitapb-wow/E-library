@@ -24,7 +24,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const fetchNotifications = async () => {
         try {
-            const res = await axios.get("http://localhost:4000/api/notifications", {
+            const res = await axios.get("https://e-library-jtx2.onrender.com/api/notifications", {
                 withCredentials: true
             });
             setNotifications(res.data);
@@ -37,7 +37,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAsRead = async (id: string) => {
         try {
-            await axios.put(`http://localhost:4000/api/notifications/${id}/read`, {}, {
+            await axios.put(`https://e-library-jtx2.onrender.com/api/notifications/${id}/read`, {}, {
                 withCredentials: true
             });
             setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
@@ -49,7 +49,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAllRead = async () => {
         try {
-            await axios.put(`http://localhost:4000/api/notifications/all-read`, {}, {
+            await axios.put(`https://e-library-jtx2.onrender.com/api/notifications/all-read`, {}, {
                 withCredentials: true
             });
             setNotifications(notifications.map(n => ({ ...n, isRead: true })));

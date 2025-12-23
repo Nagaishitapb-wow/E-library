@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:4000/api/wishlist";
+const API = "https://e-library-jtx2.onrender.com/api/wishlist";
 
 export function addToWishlist(bookId: string) {
   return axios.post(API, { bookId }, {

@@ -23,7 +23,7 @@ export default function AdminUserManager() {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get("http://localhost:4000/api/user", {
+            const res = await axios.get("https://e-library-jtx2.onrender.com/api/user", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsers(res.data);

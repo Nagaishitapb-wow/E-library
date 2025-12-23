@@ -7,7 +7,7 @@ const Categories = () => {
     const [categories, setCategories] = useState<{ _id: string, name: string }[]>([]);
 
     useEffect(() => {
-        axios.get("http://localhost:4000/api/categories")
+        axios.get("https://e-library-jtx2.onrender.com/api/categories")
             .then(res => setCategories(res.data))
             .catch(err => console.error("Error fetching categories", err));
     }, []);

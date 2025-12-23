@@ -28,7 +28,7 @@ export default function BookDetails() {
   const [comment, setComment] = useState("");
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/api/books/${id}`)
+    axios.get(`https://e-library-jtx2.onrender.com/api/books/${id}`)
       .then(res => setBook(res.data))
       .catch(() => console.log("Book fetch error"));
   }, [id]);
@@ -36,12 +36,12 @@ export default function BookDetails() {
   const handleRate = async () => {
     try {
       if (!book) return;
-      await axios.post(`http://localhost:4000/api/books/${book._id}/rate`, { rating: userRating, comment }, {
+      await axios.post(`https://e-library-jtx2.onrender.com/api/books/${book._id}/rate`, { rating: userRating, comment }, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
       toast.success("⭐ Rating submitted!");
       // Refresh book data
-      const res = await axios.get(`http://localhost:4000/api/books/${id}`);
+      const res = await axios.get(`https://e-library-jtx2.onrender.com/api/books/${id}`);
       setBook(res.data);
     } catch (err: any) {
       if (err.response?.status === 401) {

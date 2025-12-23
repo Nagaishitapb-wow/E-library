@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:4000/api/user";
+const API = "https://e-library-jtx2.onrender.com/api/user";
 
 export function getUserProfile() {
     return axios.get(`${API}/profile`, {

@@ -13,7 +13,7 @@ const VerifyEmail = () => {
         const verify = async () => {
             try {
                 const res = await axios.post(
-                    "http://localhost:4000/api/auth/verify-email",
+                    "https://e-library-jtx2.onrender.com/api/auth/verify-email",
                     { token }
                 );
                 setStatus("success");

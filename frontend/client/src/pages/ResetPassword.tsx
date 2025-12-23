@@ -12,7 +12,7 @@ export default function ResetPassword() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await axios.post("http://localhost:4000/api/auth/reset-password", {
+    await axios.post("https://e-library-jtx2.onrender.com/api/auth/reset-password", {
       token,
       newPassword: password,
     });

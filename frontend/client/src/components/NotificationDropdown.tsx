@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../api/auth";
 import { toast } from "react-toastify";
 
 interface Notification {
@@ -24,7 +24,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const fetchNotifications = async () => {
         try {
-            const res = await axios.get("https://e-library-jtx2.onrender.com/api/notifications", {
+            const res = await api.get("https://e-library-jtx2.onrender.com/api/notifications", {
                 withCredentials: true
             });
             setNotifications(res.data);
@@ -37,10 +37,10 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAsRead = async (id: string) => {
         try {
-            await axios.put(`https://e-library-jtx2.onrender.com/api/notifications/${id}/read`, {}, {
+            await api.put(`https://e-library-jtx2.onrender.com/api/notifications/${id}/read`, {}, {
                 withCredentials: true
             });
-            setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
+            setNotifications(notifications.map((n: Notification) => n._id === id ? { ...n, isRead: true } : n));
             onUnreadChange();
         } catch (error) {
             toast.error("Action failed");
@@ -49,10 +49,10 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAllRead = async () => {
         try {
-            await axios.put(`https://e-library-jtx2.onrender.com/api/notifications/all-read`, {}, {
+            await api.put(`https://e-library-jtx2.onrender.com/api/notifications/all-read`, {}, {
                 withCredentials: true
             });
-            setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+            setNotifications(notifications.map((n: Notification) => ({ ...n, isRead: true })));
             onUnreadChange();
         } catch (error) {
             toast.error("Action failed");
@@ -67,7 +67,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
             </div>
             <div className="notifications-list">
                 {loading ? <p>Loading...</p> : notifications.length === 0 ? <p className="no-notif">No notifications</p> : (
-                    notifications.map(n => (
+                    (notifications as Notification[]).map((n: Notification) => (
                         <div
                             key={n._id}
                             className={`notification-item ${n.isRead ? "read" : "unread"}`}

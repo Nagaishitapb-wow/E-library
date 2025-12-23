@@ -25,7 +25,7 @@ export default function AdminBorrowManager() {
     const fetchRecords = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get("https://e-library-jtx2.onrender.com/api/borrow/all", {
+            const res = await api.get("https://e-library-jtx2.onrender.com/api/borrow/all", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setBorrowRecords(res.data);

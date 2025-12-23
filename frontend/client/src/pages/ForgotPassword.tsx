@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import { api } from "../api/auth";
 import "../styles/global.css";
 
 export default function ForgotPassword() {
@@ -7,7 +7,7 @@ export default function ForgotPassword() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await axios.post("https://e-library-jtx2.onrender.com/api/auth/forgot-password", { email });
+    await api.post("https://e-library-jtx2.onrender.com/api/auth/forgot-password", { email });
     alert("Reset email sent!");
   }
 

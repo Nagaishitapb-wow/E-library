@@ -12,7 +12,7 @@ const VerifyEmail = () => {
     useEffect(() => {
         const verify = async () => {
             try {
-                const res = await axios.post(
+                const res = await api.post(
                     "https://e-library-jtx2.onrender.com/api/auth/verify-email",
                     { token }
                 );

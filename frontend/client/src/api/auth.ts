@@ -4,7 +4,7 @@ import type { AuthResponse } from "../types/auth.ts";
 
 
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: "https://e-library-jtx2.onrender.com/api",
   withCredentials: true,
 });

@@ -16,7 +16,7 @@ export default function AdminCategoryManager() {
 
     const fetchCategories = async () => {
         try {
-            const res = await axios.get("https://e-library-jtx2.onrender.com/api/categories");
+            const res = await api.get("https://e-library-jtx2.onrender.com/api/categories");
             setCategories(res.data);
         } catch (error) {
             toast.error("Failed to load categories");
@@ -34,14 +34,14 @@ export default function AdminCategoryManager() {
 
         try {
             if (editingCategory) {
-                await axios.put(
+                await api.put(
                     `https://e-library-jtx2.onrender.com/api/categories/${editingCategory._id}`,
                     formData,
                     { headers }
                 );
                 toast.success("Category updated successfully");
             } else {
-                await axios.post("https://e-library-jtx2.onrender.com/api/categories", formData, { headers });
+                await api.post("https://e-library-jtx2.onrender.com/api/categories", formData, { headers });
                 toast.success("Category created successfully");
             }
             setShowModal(false);
@@ -58,7 +58,7 @@ export default function AdminCategoryManager() {
 
         const token = localStorage.getItem("token");
         try {
-            await axios.delete(`https://e-library-jtx2.onrender.com/api/categories/${id}`, {
+            await api.delete(`https://e-library-jtx2.onrender.com/api/categories/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             toast.success("Category deleted");

@@ -45,10 +45,11 @@ export async function loginController(req: Request, res: Response) {
     // Set HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // only send over https in prod
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
+
 
     res.json({
       message: "Login successful",

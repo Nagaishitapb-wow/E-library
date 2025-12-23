@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { validatePassword } from "../utils/validation";
-import axios from "axios";
+import { api } from "../api/auth";
 import "../styles/global.css";
 
 export default function ResetPassword() {
@@ -12,7 +12,7 @@ export default function ResetPassword() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await axios.post("https://e-library-jtx2.onrender.com/api/auth/reset-password", {
+    await api.post("https://e-library-jtx2.onrender.com/api/auth/reset-password", {
       token,
       newPassword: password,
     });

@@ -1,9 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import NotificationDropdown from "./NotificationDropdown.tsx";
 import "../styles/navbar.css";
-import { logout } from "../api/auth";
+import { logout, api } from "../api/auth";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -21,7 +20,7 @@ export default function Navbar() {
 
     const fetchUnreadCount = async () => {
         try {
-            const res = await axios.get("https://e-library-jtx2.onrender.com/api/notifications", {
+            const res = await api.get("https://e-library-jtx2.onrender.com/api/notifications", {
                 withCredentials: true
             });
             const unread = res.data.filter((n: any) => !n.isRead).length;

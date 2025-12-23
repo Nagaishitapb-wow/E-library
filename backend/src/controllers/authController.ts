@@ -40,13 +40,51 @@ export async function loginController(req: Request, res: Response) {
 
     // If email matches ADMIN_EMAIL env, force admin role in token/response
     const role = (user.email === process.env.ADMIN_EMAIL) ? "admin" : user.role;
+    const token = generateToken(user._id.toString(), role);
+
+    // Set HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // only send over https in prod
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     res.json({
-      token: generateToken(user._id.toString(), role),
+      message: "Login successful",
       user: { id: user._id, name: user.name, email: user.email, role: role },
     });
   } catch (err: any) {
     res.status(400).json({ message: err.message || "Login failed" });
+  }
+}
+
+// ----------------- LOGOUT -----------------
+export async function logoutController(req: Request, res: Response) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  res.json({ message: "Logged out successfully" });
+}
+
+// ----------------- GET ME -----------------
+export async function getMeController(req: Request, res: Response) {
+  try {
+    const userId = (req as any).user?._id;
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const user = await User.findById(userId).select("-passwordHash");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Failed to fetch user" });
   }
 }
 
@@ -69,7 +107,15 @@ export async function verifyEmailController(req: Request, res: Response) {
   }
 }
 
-const authController = { signupController, loginController, forgotPasswordController, resetPasswordController, verifyEmailController };
+const authController = {
+  signupController,
+  loginController,
+  forgotPasswordController,
+  resetPasswordController,
+  verifyEmailController,
+  logoutController,
+  getMeController
+};
 export default authController;
 
 // forgot password

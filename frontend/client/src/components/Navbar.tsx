@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import NotificationDropdown from "./NotificationDropdown.tsx";
 import "../styles/navbar.css";
+import { logout } from "../api/auth";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -20,9 +21,8 @@ export default function Navbar() {
 
     const fetchUnreadCount = async () => {
         try {
-            const token = localStorage.getItem("token");
             const res = await axios.get("http://localhost:4000/api/notifications", {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             });
             const unread = res.data.filter((n: any) => !n.isRead).length;
             setUnreadCount(unread);
@@ -31,11 +31,19 @@ export default function Navbar() {
         }
     };
 
-    function handleLogout() {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        navigate("/")
-        window.location.reload();
+    async function handleLogout() {
+        try {
+            await logout();
+            localStorage.removeItem("user");
+            navigate("/")
+            window.location.reload();
+        } catch (error) {
+            console.error("Logout error", error);
+            // Fallback clear local state even if server fails
+            localStorage.removeItem("user");
+            navigate("/")
+            window.location.reload();
+        }
     }
 
     return (

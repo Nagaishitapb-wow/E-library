@@ -24,9 +24,8 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const fetchNotifications = async () => {
         try {
-            const token = localStorage.getItem("token");
             const res = await axios.get("http://localhost:4000/api/notifications", {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             });
             setNotifications(res.data);
         } catch (error) {
@@ -38,9 +37,8 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAsRead = async (id: string) => {
         try {
-            const token = localStorage.getItem("token");
             await axios.put(`http://localhost:4000/api/notifications/${id}/read`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             });
             setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
             onUnreadChange();
@@ -51,9 +49,8 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAllRead = async () => {
         try {
-            const token = localStorage.getItem("token");
             await axios.put(`http://localhost:4000/api/notifications/all-read`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             });
             setNotifications(notifications.map(n => ({ ...n, isRead: true })));
             onUnreadChange();

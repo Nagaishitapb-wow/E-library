@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 export function authRequired(req: Request, res: Response, next: NextFunction) {
-  const token = req.header("Authorization")?.split(" ")[1];
+  const token = req.cookies.token || req.header("Authorization")?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "No token provided" });
 
   try {

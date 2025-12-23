@@ -6,7 +6,7 @@ import type { AuthResponse } from "../types/auth.ts";
 
 const api = axios.create({
   baseURL: "http://localhost:4000/api",
-  withCredentials: false,
+  withCredentials: true,
 });
 
 interface SignupData {
@@ -27,5 +27,14 @@ export async function signup(data: SignupData): Promise<AuthResponse> {
 
 export async function login(data: LoginData): Promise<AuthResponse> {
   const res = await api.post<AuthResponse>("/auth/login", data);
+  return res.data;
+}
+
+export async function logout(): Promise<void> {
+  await api.post("/auth/logout");
+}
+
+export async function getMe(): Promise<any> {
+  const res = await api.get("/auth/me");
   return res.data;
 }

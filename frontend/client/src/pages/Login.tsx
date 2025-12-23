@@ -37,13 +37,9 @@ const Login = () => {
       console.log("🔐 Login attempt starting...");
       const res: AuthResponse = await login({ email, password });
       console.log("✅ Login response received:", res);
-      console.log("📝 Token from response:", res.token);
 
-      localStorage.setItem("token", res.token!);
+      // Token is now handled via HTTP-only cookie, no need to store it in localStorage
       localStorage.setItem("user", JSON.stringify(res.user!));
-
-      console.log("💾 Token saved to localStorage");
-      console.log("🔍 Verifying token in localStorage:", localStorage.getItem("token"));
 
       if (res.user!.role === "admin") {
         navigate("/admin");

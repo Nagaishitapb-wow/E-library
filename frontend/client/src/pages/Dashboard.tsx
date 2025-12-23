@@ -1,13 +1,19 @@
-import "../styles/global.css";
+import { logout } from "../api/auth";
 
 export default function Dashboard() {
   const userJson = localStorage.getItem("user");
   const user = userJson ? JSON.parse(userJson) : null;
 
-  function handleLogout() {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    window.location.href = "/";
+  async function handleLogout() {
+    try {
+      await logout();
+      localStorage.removeItem("user");
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout error", error);
+      localStorage.removeItem("user");
+      window.location.href = "/";
+    }
   }
 
   return (

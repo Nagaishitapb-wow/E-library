@@ -38,9 +38,12 @@ export async function loginController(req: Request, res: Response) {
       return res.status(403).json({ message: "Please verify your email before logging in." });
     }
 
+    // If email matches ADMIN_EMAIL env, force admin role in token/response
+    const role = (user.email === process.env.ADMIN_EMAIL) ? "admin" : user.role;
+
     res.json({
-      token: generateToken(user._id.toString(), user.role),
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      token: generateToken(user._id.toString(), role),
+      user: { id: user._id, name: user.name, email: user.email, role: role },
     });
   } catch (err: any) {
     res.status(400).json({ message: err.message || "Login failed" });

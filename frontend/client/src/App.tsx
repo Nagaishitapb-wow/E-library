@@ -27,6 +27,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import MyFines from "./pages/MyFines";
 
 const App = () => {
   return (
@@ -63,6 +64,7 @@ const App = () => {
           <ProtectedRoute><Dashboard /></ProtectedRoute>
         } />
         <Route path="/borrowed" element={<ProtectedRoute><BorrowedBooks /></ProtectedRoute>} />
+        <Route path="/fines" element={<ProtectedRoute><MyFines /></ProtectedRoute>} />
         <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 

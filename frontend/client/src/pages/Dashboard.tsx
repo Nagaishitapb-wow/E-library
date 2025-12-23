@@ -27,6 +27,7 @@ export default function Dashboard() {
             <a href="/books" className="dash-link">📚 Browse Books</a>
             <a href="/wishlist" className="dash-link">❤️ Wishlist</a>
             <a href="/borrowed" className="dash-link">📖 Borrowed Books</a>
+            <a href="/fines" className="dash-link">💸 My Fines</a>
             <a href="/profile" className="dash-link">👤 Profile</a>
 
             <button

@@ -27,6 +27,14 @@ export async function requestReturn(borrowId: string) {
   }).then(res => res.data);
 }
 
+// Pay fine
+export async function payFine(borrowId: string) {
+  const token = localStorage.getItem("token");
+  return axios.post(`${API}/pay-fine/${borrowId}`, {}, {
+    headers: { Authorization: `Bearer ${token}` }
+  }).then(res => res.data);
+}
+
 // Admin confirms a return
 export async function confirmReturn(borrowId: string) {
   const token = localStorage.getItem("token");

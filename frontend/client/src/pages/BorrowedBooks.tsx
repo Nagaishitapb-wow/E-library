@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getMyBorrowedBooks, requestReturn } from "../api/borrow";
+import { getMyBorrowedBooks, requestReturn, payFine } from "../api/borrow";
 import { toast } from "react-toastify";
+import PaymentModal, { type PaymentDetails } from "../components/PaymentModal";
 import "../styles/borrowed.css";
 
 interface BorrowedBook {
@@ -20,6 +21,7 @@ interface BorrowedBook {
 
 export default function BorrowedBooks() {
   const [books, setBooks] = useState<BorrowedBook[]>([]);
+  const [selectedFineBook, setSelectedFineBook] = useState<BorrowedBook | null>(null);
 
   useEffect(() => {
     getMyBorrowedBooks().then(setBooks).catch(() => toast.error("Failed to load Borrowed Books"));
@@ -32,6 +34,22 @@ export default function BorrowedBooks() {
       setBooks(prev => prev.map(b => b._id === borrowId ? { ...b, returnRequested: true } : b));
     } catch {
       toast.error("Request failed");
+    }
+  }
+
+  async function handlePayFine(_details: PaymentDetails) {
+    if (!selectedFineBook) return;
+
+    // Simulate processing delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    try {
+      await payFine(selectedFineBook._id);
+      toast.success("Fine paid successfully!");
+      setBooks(prev => prev.map(b => b._id === selectedFineBook._id ? { ...b, fineAmount: 0 } : b));
+      setSelectedFineBook(null);
+    } catch {
+      toast.error("Payment failed");
     }
   }
 
@@ -54,18 +72,37 @@ export default function BorrowedBooks() {
               Due: <b>{new Date(b.dueDate).toLocaleDateString()}</b>
             </p>
 
-            {b.fineAmount > 0 && <p className="fine">Fine ₹{b.fineAmount}</p>}
+            {b.fineAmount > 0 && (
+              <div className="fine-section">
+                <p className="fine">Fine: ₹{b.fineAmount}</p>
+                <button
+                  className="pay-fine-btn"
+                  onClick={() => setSelectedFineBook(b)}
+                >
+                  Pay Fine
+                </button>
+              </div>
+            )}
 
             <button
               className={`return-btn ${b.returnRequested ? "pending" : ""}`}
               onClick={() => !b.returnRequested && handleReturnRequest(b._id)}
-              disabled={b.returnRequested}
+              disabled={b.returnRequested || b.fineAmount > 0}
             >
               {b.returnRequested ? "⏳ Return Pending" : "🔙 Request Return"}
             </button>
           </div>
         ))}
       </div>
+
+      {selectedFineBook && (
+        <PaymentModal
+          isOpen={true}
+          onClose={() => setSelectedFineBook(null)}
+          onPay={handlePayFine}
+          amount={selectedFineBook.fineAmount}
+        />
+      )}
     </div>
   );
 }

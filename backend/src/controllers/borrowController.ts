@@ -164,3 +164,35 @@ export async function getAllBorrowedBooks(req: Request, res: Response) {
     res.status(500).json({ message: "Failed to fetch borrowed books" });
   }
 }
+
+// ===================== PAY FINE =====================
+export async function payFine(req: Request, res: Response) {
+  try {
+    const { borrowId } = req.params;
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const record = await Borrow.findOne({ _id: borrowId, userId });
+
+    if (!record) {
+      return res.status(404).json({ message: "Borrow record not found" });
+    }
+
+    if (record.fineAmount <= 0) {
+      return res.status(400).json({ message: "No fine to pay" });
+    }
+
+    // "Fake" payment logic: just clear the fine
+    record.fineAmount = 0;
+    await record.save();
+
+    res.json({ message: "Fine paid successfully" });
+
+  } catch (err) {
+    console.error("Pay fine error:", err);
+    res.status(500).json({ message: "Payment failed" });
+  }
+}

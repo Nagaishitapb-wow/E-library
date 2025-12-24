@@ -21,15 +21,22 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    process.env.CLIENT_URL1
+];
+
 app.use(cors({
-    origin: [
-        process.env.FRONTEND_URL,
-        "https://e-library-bwlp0evyl-naga-ishita-p-bs-projects.vercel.app"
-    ].filter((o): o is string => !!o),
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
 }));
+
 
 
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { api } from "../api/auth";
 import "../styles/books.css";
 
 
@@ -29,14 +29,14 @@ export default function Books() {
 
   useEffect(() => {
     // Fetch books
-    api.get("https://e-library-jtx2.onrender.com/api/books")
-      .then(res => setBooks(res.data))
+    api.get("/books")
+      .then((res: any) => setBooks(res.data))
       .catch(() => alert("Failed to fetch books"))
       .finally(() => setLoading(false));
 
     // Fetch categories
-    api.get("https://e-library-jtx2.onrender.com/api/categories")
-      .then(res => setCategories(res.data))
+    api.get("/categories")
+      .then((res: any) => setCategories(res.data))
       .catch(() => console.log("Failed to fetch categories"));
   }, []);
 

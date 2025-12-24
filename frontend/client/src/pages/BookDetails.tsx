@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { api } from "../api/auth";
 import "../styles/bookDetails.css";
 import { borrowBook } from "../api/borrow";
 import { toast } from "react-toastify";
@@ -28,21 +28,19 @@ export default function BookDetails() {
   const [comment, setComment] = useState("");
 
   useEffect(() => {
-    api.get(`https://e-library-jtx2.onrender.com/api/books/${id}`)
-      .then(res => setBook(res.data))
+    api.get(`/books/${id}`)
+      .then((res: { data: Book }) => setBook(res.data))
       .catch(() => console.log("Book fetch error"));
   }, [id]);
 
   const handleRate = async () => {
     try {
       if (!book) return;
-      await api.post(`https://e-library-jtx2.onrender.com/api/books/${book._id}/rate`, { rating: userRating, comment }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
+      await api.post(`/books/${book._id}/rate`, { rating: userRating, comment });
       toast.success("⭐ Rating submitted!");
       // Refresh book data
-      const res = await api.get(`https://e-library-jtx2.onrender.com/api/books/${id}`);
-      setBook(res.data);
+      const res = await api.get(`/books/${id}`);
+      setBook(res.data as Book);
     } catch (err: any) {
       if (err.response?.status === 401) {
         toast.error("Please login to submit a review");

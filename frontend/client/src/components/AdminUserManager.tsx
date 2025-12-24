@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../api/auth";
 import { toast } from "react-toastify";
 
 interface UserStats {
@@ -22,10 +22,7 @@ export default function AdminUserManager() {
 
     const fetchUsers = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await api.get("https://e-library-jtx2.onrender.com/api/user", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get("/user");
             setUsers(res.data);
         } catch (error) {
             toast.error("Failed to load users");

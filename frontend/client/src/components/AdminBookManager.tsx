@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { api } from "../api/auth";
 import { toast } from "react-toastify";
 
 interface Book {
@@ -37,7 +37,7 @@ export default function AdminBookManager() {
 
     const fetchBooks = async () => {
         try {
-            const res = await api.get("https://e-library-jtx2.onrender.com/api/books");
+            const res = await api.get("/books");
             setBooks(res.data);
         } catch {
             toast.error("Failed to load books");
@@ -46,7 +46,7 @@ export default function AdminBookManager() {
 
     const fetchCategories = async () => {
         try {
-            const res = await api.get("https://e-library-jtx2.onrender.com/api/categories");
+            const res = await api.get("/categories");
             setCategories(res.data);
         } catch {
             console.error("Failed to load categories");
@@ -60,15 +60,13 @@ export default function AdminBookManager() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = localStorage.getItem("token");
-        const headers = { Authorization: `Bearer ${token}` };
 
         try {
             if (editingBook) {
-                await api.put(`https://e-library-jtx2.onrender.com/api/books/${editingBook._id}`, formData, { headers });
+                await api.put(`/books/${editingBook._id}`, formData);
                 toast.success("Book updated");
             } else {
-                await api.post("https://e-library-jtx2.onrender.com/api/books", formData, { headers });
+                await api.post("/books", formData);
                 toast.success("Book created");
             }
             setShowModal(false);
@@ -80,9 +78,8 @@ export default function AdminBookManager() {
 
     const handleDelete = async (id: string) => {
         if (!window.confirm("Delete this book?")) return;
-        const token = localStorage.getItem("token");
         try {
-            await api.delete(`https://e-library-jtx2.onrender.com/api/books/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+            await api.delete(`/books/${id}`);
             toast.success("Book deleted");
             fetchBooks();
         } catch (error: any) {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../api/auth";
 import { Link } from "react-router-dom";
 import "../styles/home.css";
 
@@ -19,12 +19,12 @@ export default function Home() {
   useEffect(() => {
     console.log("📡 Fetching books...");
 
-    api.get("https://e-library-jtx2.onrender.com/api/books")
-      .then(res => {
+    api.get("/books")
+      .then((res: any) => {
         console.log("📘 Books received:", res.data);
         setBooks(res.data);
       })
-      .catch(err => {
+      .catch((err: any) => {
         console.log("❌ BOOK FETCH ERROR:", err);
       });
   }, []);

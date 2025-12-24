@@ -10,7 +10,16 @@ export async function registerUser(name: string, email: string, password: string
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  return await User.create({ name, email, passwordHash, role, verificationToken });
+
+  try {
+    return await User.create({ name, email, passwordHash, role, verificationToken });
+  } catch (dbError: any) {
+    if (dbError.code === 11000) {
+      console.log("⚠️ Race condition: Email registered during process:", email);
+      throw new Error("Email already registered");
+    }
+    throw dbError;
+  }
 }
 
 export async function loginUser(email: string, password: string) {

@@ -24,10 +24,7 @@ export default function AdminBorrowManager() {
 
     const fetchRecords = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await api.get("/borrow/all", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get("/borrow/all");
             setBorrowRecords(res.data);
         } catch (error) {
             toast.error("Failed to load borrow records");

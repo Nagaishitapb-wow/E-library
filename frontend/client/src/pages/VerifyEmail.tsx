@@ -12,10 +12,7 @@ const VerifyEmail = () => {
     useEffect(() => {
         const verify = async () => {
             try {
-                const res = await api.post(
-                    "https://e-library-jtx2.onrender.com/api/auth/verify-email",
-                    { token }
-                );
+                const res = await api.post("/auth/verify-email", { token });
                 setStatus("success");
                 setMessage(res.data.message);
             } catch (err: any) {

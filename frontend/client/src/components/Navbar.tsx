@@ -20,7 +20,9 @@ export default function Navbar() {
 
     const fetchUnreadCount = async () => {
         try {
-            const res = await api.get("/notifications");
+            const res = await api.get("/notifications", {
+                withCredentials: true
+            });
             const unread = res.data.filter((n: any) => !n.isRead).length;
             setUnreadCount(unread);
         } catch (error) {

@@ -4,22 +4,9 @@ import type { AuthResponse } from "../types/auth.ts";
 
 
 
-// Ensure baseURL ends with a slash so relative paths work correctly
-const rawBaseURL = import.meta.env.VITE_API_URL || "https://e-library-jtx2.onrender.com/api";
-const baseURL = rawBaseURL.endsWith("/") ? rawBaseURL : `${rawBaseURL}/`;
-
 export const api = axios.create({
-  baseURL,
+  baseURL: import.meta.env.VITE_API_URL || "https://e-library-jtx2.onrender.com/api",
   withCredentials: true,
-});
-
-// Interceptor to handle leading slashes in relative URLs
-// This ensures api.get("/books") hits .../api/books instead of .../books
-api.interceptors.request.use((config) => {
-  if (config.url && config.url.startsWith("/")) {
-    config.url = config.url.substring(1);
-  }
-  return config;
 });
 
 interface SignupData {

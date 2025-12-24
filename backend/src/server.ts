@@ -26,16 +26,18 @@ const allowedOrigins = [
     process.env.CLIENT_URL1
 ];
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    credentials: true
-}));
+app.use(
+    cors({
+        origin: [
+            "https://e-library-kohl.vercel.app",   // main production frontend
+            "https://e-library-git-main-naga-ishita-p-bs-projects.vercel.app", // preview
+            "https://e-library-dcqbe6014-naga-ishita-p-bs-projects.vercel.app", // preview
+            "http://localhost:5173"
+        ],
+        credentials: true,
+    })
+);
+
 
 
 

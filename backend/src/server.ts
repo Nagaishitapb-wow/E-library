@@ -39,13 +39,12 @@ app.use(
                 return callback(null, true);
             }
 
-            // Allow all Vercel preview deployments for this project
-            const vercelPreviewPattern = /^https:\/\/e-library-.*-naga-ishita-p-bs-projects\.vercel\.app$/;
-            if (vercelPreviewPattern.test(origin)) {
+            // Allow any Vercel deployment for this project
+            if (origin.startsWith("https://e-library-") && origin.endsWith(".vercel.app")) {
                 return callback(null, true);
             }
 
-            callback(new Error('Not allowed by CORS'));
+            callback(null, false);
         },
         credentials: true,
     })

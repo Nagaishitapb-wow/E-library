@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import { api } from "../api/auth";
 import "../styles/auth.css";
 
 const VerifyEmail = () => {

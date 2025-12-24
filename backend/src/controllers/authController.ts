@@ -9,34 +9,67 @@ import bcrypt from "bcrypt";
 // ----------------- SIGNUP -----------------
 export async function signupController(req: Request, res: Response) {
   try {
-    const { name, email, password, role } = req.body;
+    let { name, email, password, role } = req.body;
+
+    // 1. Normalization
+    name = name?.trim();
+    email = email?.trim()?.toLowerCase();
+
     console.log("📨 Signup attempt for:", email);
 
+    // 2. Basic Empty Check
     if (!name || !email || !password) {
       console.log("❌ Signup failed: Missing fields");
-      return res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({ message: "All fields required (Name, Email, Password)" });
     }
 
-    // Basic protection: only allow creating admins if a secret key is provided (omitted for now for simplicity/testing)
-    const userRole = role === "admin" ? "admin" : "user";
+    // 3. Name Validation (min 2 chars)
+    if (name.length < 2) {
+      return res.status(400).json({ message: "Name must be at least 2 characters long" });
+    }
+
+    // 4. Email format validation (Regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    // 5. Role Security & Admin Check
+    // Prevent role injection from body.
+    let userRole: "user" | "admin" = "user";
+
+    // Automatically promote to admin if email matches ADMIN_EMAIL env
+    if (process.env.ADMIN_EMAIL && email === process.env.ADMIN_EMAIL.toLowerCase()) {
+      userRole = "admin";
+      console.log("👑 Admin role assigned to:", email);
+    }
+
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
+    // 6. Database Registration
     const user = await registerUser(name, email, password, userRole, verificationToken);
 
+    // 7. Email Verification Attempt
     try {
-      await sendVerificationEmail(email, verificationToken);
+      await sendVerificationEmail(email, verificationToken, name);
     } catch (emailError: any) {
       console.error("📧 Email sending failed, rolling back user registration:", emailError);
+
+      // Cleanup partially created user
       await User.findByIdAndDelete(user._id);
-      throw new Error(`Failed to send verification email: ${emailError.message}. Please check your email and try again.`);
+
+      return res.status(500).json({
+        message: `Account created but verification email failed to send. We've rolled back the registration. Error: ${emailError.message}. Please try again later.`
+      });
     }
 
     res.status(201).json({
-      message: "Registration successful! Please check your email to verify your account."
+      message: "Registration successful! Please check your email inbox (and spam folder) to verify your account."
     });
   } catch (err: any) {
     console.error("❌ Signup Error:", err.message);
-    res.status(400).json({ message: err.message || "Signup failed" });
+    const statusCode = err.message === "Email already registered" ? 409 : 400;
+    res.status(statusCode).json({ message: err.message || "Signup failed" });
   }
 }
 
@@ -101,6 +134,7 @@ export async function getMeController(req: Request, res: Response) {
   }
 }
 
+// ----------------- VERIFY EMAIL -----------------
 export async function verifyEmailController(req: Request, res: Response) {
   try {
     const { token } = req.body;
@@ -120,6 +154,52 @@ export async function verifyEmailController(req: Request, res: Response) {
   }
 }
 
+// ----------------- FORGOT PASSWORD -----------------
+export async function forgotPasswordController(req: Request, res: Response) {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(400).json({ message: "Email not found" });
+
+    const token = crypto.randomBytes(20).toString("hex");
+    user.resetToken = token;
+    user.resetTokenExpiry = Date.now() + 1000 * 60 * 10; // 10 min expiry
+    await user.save();
+
+    await sendResetEmail(email, token, user.name);
+
+    res.json({ message: "Reset email sent successfully" });
+  } catch (err: any) {
+    console.error("❌ Forgot Password Error:", err.message);
+    res.status(500).json({ message: err.message || "Failed to send reset email" });
+  }
+}
+
+// ----------------- RESET PASSWORD -----------------
+export async function resetPasswordController(req: Request, res: Response) {
+  try {
+    const { token, newPassword } = req.body;
+
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+
+    user.passwordHash = await bcrypt.hash(newPassword, 10);
+    user.resetToken = undefined;
+    user.resetTokenExpiry = undefined;
+    await user.save();
+
+    res.json({ message: "Password reset successful" });
+  } catch (err: any) {
+    console.error("❌ Reset Password Error:", err.message);
+    res.status(500).json({ message: err.message || "Password reset failed" });
+  }
+}
+
 const authController = {
   signupController,
   loginController,
@@ -129,39 +209,5 @@ const authController = {
   logoutController,
   getMeController
 };
+
 export default authController;
-
-// forgot password
-export async function forgotPasswordController(req: Request, res: Response) {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-
-  if (!user) return res.status(400).json({ message: "Email not found" });
-
-  const token = crypto.randomBytes(20).toString("hex");
-  user.resetToken = token;
-  user.resetTokenExpiry = Date.now() + 1000 * 60 * 10; // 10 min expiry
-  await user.save();
-
-  await sendResetEmail(email, token);
-  res.json({ message: "Reset email sent" });
-}
-
-// reset password
-export async function resetPasswordController(req: Request, res: Response) {
-  const { token, newPassword } = req.body;
-
-  const user = await User.findOne({
-    resetToken: token,
-    resetTokenExpiry: { $gt: Date.now() }
-  });
-
-  if (!user) return res.status(400).json({ message: "Invalid or expired token" });
-
-  user.passwordHash = await bcrypt.hash(newPassword, 10);
-  user.resetToken = undefined;
-  user.resetTokenExpiry = undefined;
-  await user.save();
-
-  res.json({ message: "Password reset successful" });
-}

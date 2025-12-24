@@ -19,7 +19,7 @@ interface BorrowedBook {
     fineAmount: number;
 }
 
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/400x600?text=No+Cover+Available";
+const PLACEHOLDER_IMAGE = "https://placehold.co/400x600?text=No+Cover+Available";
 
 export default function MyFines() {
     const [fines, setFines] = useState<BorrowedBook[]>([]);

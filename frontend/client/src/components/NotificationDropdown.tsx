@@ -24,7 +24,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const fetchNotifications = async () => {
         try {
-            const res = await api.get("https://e-library-jtx2.onrender.com/api/notifications", {
+            const res = await api.get("/notifications", {
                 withCredentials: true
             });
             setNotifications(res.data);
@@ -37,9 +37,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAsRead = async (id: string) => {
         try {
-            await api.put(`https://e-library-jtx2.onrender.com/api/notifications/${id}/read`, {}, {
-                withCredentials: true
-            });
+            await api.put(`/notifications/${id}/read`);
             setNotifications(notifications.map((n: Notification) => n._id === id ? { ...n, isRead: true } : n));
             onUnreadChange();
         } catch (error) {
@@ -49,9 +47,7 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
 
     const markAllRead = async () => {
         try {
-            await api.put(`https://e-library-jtx2.onrender.com/api/notifications/all-read`, {}, {
-                withCredentials: true
-            });
+            await api.put("/notifications/all-read");
             setNotifications(notifications.map((n: Notification) => ({ ...n, isRead: true })));
             onUnreadChange();
         } catch (error) {

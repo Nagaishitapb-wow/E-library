@@ -20,9 +20,7 @@ export default function Navbar() {
 
     const fetchUnreadCount = async () => {
         try {
-            const res = await api.get("https://e-library-jtx2.onrender.com/api/notifications", {
-                withCredentials: true
-            });
+            const res = await api.get("/notifications");
             const unread = res.data.filter((n: any) => !n.isRead).length;
             setUnreadCount(unread);
         } catch (error) {

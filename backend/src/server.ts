@@ -24,31 +24,27 @@ const PORT = process.env.PORT || 4000;
 const allowedOrigins: string[] = [
     process.env.CLIENT_URL,
     "https://e-library-kohl.vercel.app",
+    "*",
     "https://e-library-git-main-naga-ishita-p-bs-projects.vercel.app",
     "https://e-library-dcqbe6014-naga-ishita-p-bs-projects.vercel.app",
     "http://localhost:5173"
 ].filter((o): o is string => !!o);
 
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            if (!origin) return callback(null, true);
 
-            // Check if it's in the hardcoded allowed list
-            if (allowedOrigins.includes(origin)) {
-                return callback(null, true);
-            }
-
-            // Allow any Vercel deployment for this project
-            if (origin.startsWith("https://e-library-") && origin.endsWith(".vercel.app")) {
-                return callback(null, true);
-            }
-
+const corsOptions = {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        if (!origin || allowedOrigins.includes(origin) || (origin.startsWith("https://e-library-") && origin.endsWith(".vercel.app"))) {
+            callback(null, true);
+        } else {
             callback(null, false);
-        },
-        credentials: true,
-    })
-);
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 
 
 

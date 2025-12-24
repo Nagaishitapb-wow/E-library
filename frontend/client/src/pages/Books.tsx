@@ -14,7 +14,7 @@ interface Book {
   coverImage?: string;
 }
 
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/400x600?text=No+Cover+Available";
+const PLACEHOLDER_IMAGE = "https://placehold.co/400x600?text=No+Cover+Available";
 
 interface Category {
   _id: string;

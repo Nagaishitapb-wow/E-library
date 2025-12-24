@@ -13,6 +13,8 @@ interface WishlistItem {
   createdAt: string;
 }
 
+const PLACEHOLDER_IMAGE = "https://via.placeholder.com/400x600?text=No+Cover+Available";
+
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);  // FIXED TYPE
   const [loading, setLoading] = useState<boolean>(true);
@@ -40,7 +42,13 @@ export default function Wishlist() {
       <div className="wishlist-grid">
         {wishlist.map(item => (
           <div key={item._id} className="wishlist-card">
-            <img src={item.bookId.coverImage} alt={item.bookId.title} />
+            <img
+              src={item.bookId.coverImage || PLACEHOLDER_IMAGE}
+              alt={item.bookId.title}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+              }}
+            />
 
             <h3>{item.bookId.title}</h3>
             <p>{item.bookId.author}</p>

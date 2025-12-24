@@ -11,7 +11,10 @@ interface Book {
   rating: number;
   category?: { _id: string; name: string };
   pdfUrl?: string;
+  coverImage?: string;
 }
+
+const PLACEHOLDER_IMAGE = "https://via.placeholder.com/400x600?text=No+Cover+Available";
 
 interface Category {
   _id: string;
@@ -86,6 +89,14 @@ export default function Books() {
         ) : (
           filteredBooks.map(book => (
             <div key={book._id} className="book-card">
+              <img
+                src={book.coverImage || PLACEHOLDER_IMAGE}
+                alt={book.title}
+                className="book-card-img"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+                }}
+              />
               <h3>{book.title}</h3>
               <p><b>Author:</b> {book.author}</p>
               {book.category && (

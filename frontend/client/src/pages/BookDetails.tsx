@@ -19,6 +19,8 @@ interface Book {
   stock: number;
 }
 
+const PLACEHOLDER_IMAGE = "https://via.placeholder.com/400x600?text=No+Cover+Available";
+
 export default function BookDetails() {
 
   const { id } = useParams();
@@ -55,7 +57,14 @@ export default function BookDetails() {
   return (
     <div className="book-details-container">
 
-      <img src={book.coverImage} alt={book.title} className="book-cover" />
+      <img
+        src={book.coverImage || PLACEHOLDER_IMAGE}
+        alt={book.title}
+        className="book-cover"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+        }}
+      />
 
       <div className="details-box">
         <h1>{book.title}</h1>

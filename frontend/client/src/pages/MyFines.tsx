@@ -19,6 +19,8 @@ interface BorrowedBook {
     fineAmount: number;
 }
 
+const PLACEHOLDER_IMAGE = "https://via.placeholder.com/400x600?text=No+Cover+Available";
+
 export default function MyFines() {
     const [fines, setFines] = useState<BorrowedBook[]>([]);
     const [selectedFineBook, setSelectedFineBook] = useState<BorrowedBook | null>(null);
@@ -75,7 +77,13 @@ export default function MyFines() {
             <div className="borrowed-grid">
                 {fines.map(b => (
                     <div className="borrow-card" key={b._id} style={{ borderColor: "#ef5350" }}>
-                        <img src={b.bookId.coverImage} alt={b.bookId.title} />
+                        <img
+                            src={b.bookId.coverImage || PLACEHOLDER_IMAGE}
+                            alt={b.bookId.title}
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+                            }}
+                        />
 
                         <h3>{b.bookId.title}</h3>
                         <p className="author">by {b.bookId.author}</p>

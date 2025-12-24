@@ -13,6 +13,8 @@ interface Book {
   pdfUrl?: string;
 }
 
+const PLACEHOLDER_IMAGE = "https://via.placeholder.com/400x600?text=No+Cover+Available";
+
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
 
@@ -48,8 +50,11 @@ export default function Home() {
           {books.map(book => (
             <div key={book._id} className="book-card">
               <img
-                src={book.coverImage || "/placeholder-book.png"}
+                src={book.coverImage || PLACEHOLDER_IMAGE}
                 alt={book.title}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+                }}
               />
               <h4>{book.title}</h4>
               <p className="author">{book.author}</p>

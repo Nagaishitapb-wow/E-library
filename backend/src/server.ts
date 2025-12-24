@@ -32,13 +32,20 @@ const allowedOrigins: string[] = [
 app.use(
     cors({
         origin: (origin, callback) => {
-            // Allow requests with no origin (like mobile apps or curl requests)
             if (!origin) return callback(null, true);
-            if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
+
+            // Check if it's in the hardcoded allowed list
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
             }
+
+            // Allow all Vercel preview deployments for this project
+            const vercelPreviewPattern = /^https:\/\/e-library-.*-naga-ishita-p-bs-projects\.vercel\.app$/;
+            if (vercelPreviewPattern.test(origin)) {
+                return callback(null, true);
+            }
+
+            callback(new Error('Not allowed by CORS'));
         },
         credentials: true,
     })

@@ -9,21 +9,33 @@ import bcrypt from "bcrypt";
 // ----------------- SIGNUP -----------------
 export async function signupController(req: Request, res: Response) {
   try {
-    const { name, email, password, role } = req.body; // Allow role for now (or restrict via admin secret later)
-    if (!name || !email || !password)
+    const { name, email, password, role } = req.body;
+    console.log("📨 Signup attempt for:", email);
+
+    if (!name || !email || !password) {
+      console.log("❌ Signup failed: Missing fields");
       return res.status(400).json({ message: "All fields required" });
+    }
 
     // Basic protection: only allow creating admins if a secret key is provided (omitted for now for simplicity/testing)
     const userRole = role === "admin" ? "admin" : "user";
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
     const user = await registerUser(name, email, password, userRole, verificationToken);
-    await sendVerificationEmail(email, verificationToken);
+
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailError: any) {
+      console.error("📧 Email sending failed, rolling back user registration:", emailError);
+      await User.findByIdAndDelete(user._id);
+      throw new Error(`Failed to send verification email: ${emailError.message}. Please check your email and try again.`);
+    }
 
     res.status(201).json({
       message: "Registration successful! Please check your email to verify your account."
     });
   } catch (err: any) {
+    console.error("❌ Signup Error:", err.message);
     res.status(400).json({ message: err.message || "Signup failed" });
   }
 }

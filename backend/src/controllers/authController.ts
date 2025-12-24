@@ -23,13 +23,13 @@ export async function signupController(req: Request, res: Response) {
 
     const user = await registerUser(name, email, password, userRole, verificationToken);
 
-    try {
-      await sendVerificationEmail(email, verificationToken);
-    } catch (emailError: any) {
-      console.error("📧 Email sending failed, rolling back user registration:", emailError);
-      await User.findByIdAndDelete(user._id);
-      throw new Error(`Failed to send verification email: ${emailError.message}. Please check your email and try again.`);
-    }
+    // try {
+    //   await sendVerificationEmail(email, verificationToken);
+    // } catch (emailError: any) {
+    //   console.error("📧 Email sending failed, rolling back user registration:", emailError);
+    //   await User.findByIdAndDelete(user._id);
+    //   throw new Error(`Failed to send verification email: ${emailError.message}. Please check your email and try again.`);
+    // }
 
     res.status(201).json({
       message: "Registration successful! Please check your email to verify your account."

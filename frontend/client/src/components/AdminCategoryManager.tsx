@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { api } from "../api/auth";
 import { toast } from "react-toastify";
 
 interface Category {

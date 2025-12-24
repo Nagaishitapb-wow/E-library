@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../api/auth";
 import { toast } from "react-toastify";
 import { confirmReturn } from "../api/borrow";
 
@@ -25,7 +25,7 @@ export default function AdminBorrowManager() {
     const fetchRecords = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await api.get("https://e-library-jtx2.onrender.com/api/borrow/all", {
+            const res = await api.get("/borrow/all", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setBorrowRecords(res.data);

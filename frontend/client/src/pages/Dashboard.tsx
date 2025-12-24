@@ -1,18 +1,22 @@
 import { logout } from "../api/auth";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const userJson = localStorage.getItem("user");
   const user = userJson ? JSON.parse(userJson) : null;
+  const navigate = useNavigate();
 
   async function handleLogout() {
     try {
       await logout();
       localStorage.removeItem("user");
-      window.location.href = "/";
+      navigate("/");
+      window.location.reload();
     } catch (error) {
       console.error("Logout error", error);
       localStorage.removeItem("user");
-      window.location.href = "/";
+      navigate("/");
+      window.location.reload();
     }
   }
 
@@ -30,11 +34,11 @@ export default function Dashboard() {
         {user && (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", textAlign: "center" }}>
 
-            <a href="/books" className="dash-link">📚 Browse Books</a>
-            <a href="/wishlist" className="dash-link">❤️ Wishlist</a>
-            <a href="/borrowed" className="dash-link">📖 Borrowed Books</a>
-            <a href="/fines" className="dash-link">💸 My Fines</a>
-            <a href="/profile" className="dash-link">👤 Profile</a>
+            <Link to="/books" className="dash-link">📚 Browse Books</Link>
+            <Link to="/wishlist" className="dash-link">❤️ Wishlist</Link>
+            <Link to="/borrowed" className="dash-link">📖 Borrowed Books</Link>
+            <Link to="/fines" className="dash-link">💸 My Fines</Link>
+            <Link to="/profile" className="dash-link">👤 Profile</Link>
 
             <button
               onClick={handleLogout}
@@ -59,8 +63,8 @@ export default function Dashboard() {
         {/* Guest View */}
         {!user && (
           <div style={{ display: "flex", gap: "30px", justifyContent: "center" }}>
-            <a href="/login" style={{ color: "#fff", fontSize: "19px", fontWeight: "500" }}>Login</a>
-            <a href="/signup" style={{ color: "#fff", fontSize: "19px", fontWeight: "500" }}>Signup</a>
+            <Link to="/login" style={{ color: "#fff", fontSize: "19px", fontWeight: "500" }}>Login</Link>
+            <Link to="/signup" style={{ color: "#fff", fontSize: "19px", fontWeight: "500" }}>Signup</Link>
           </div>
         )}
 

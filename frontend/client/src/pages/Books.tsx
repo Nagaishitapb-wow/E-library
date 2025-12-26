@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/auth";
 import "../styles/books.css";
-
+import SkeletonBook from "../components/SkeletonBook";
 
 interface Book {
   _id: string;
@@ -52,7 +52,6 @@ export default function Books() {
     return matchesCategory && matchesSearch;
   });
 
-  if (loading) return <h2 style={{ textAlign: "center" }}>Loading Books...</h2>;
 
   return (
     <div className="books-page">
@@ -84,7 +83,12 @@ export default function Books() {
       </div>
 
       <div className="books-container">
-        {filteredBooks.length === 0 ? (
+        {loading ? (
+          // Show 8 skeletons while loading
+          Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonBook key={i} />
+          ))
+        ) : filteredBooks.length === 0 ? (
           <p className="no-books">No books found matching your criteria.</p>
         ) : (
           filteredBooks.map(book => (

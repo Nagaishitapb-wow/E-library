@@ -166,7 +166,17 @@
     text-align: center;
   }
 
+  .borrowed-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
   .borrow-card {
-    padding: 20px;
+    padding: 15px;
+  }
+
+  .return-btn {
+    padding: 10px;
+    font-size: 0.85rem;
   }
 }

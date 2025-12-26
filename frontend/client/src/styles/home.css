@@ -1,217 +1,175 @@
+/* ======================================
+   HOME PAGE – CLEAN PROFESSIONAL UI
+   White background • Dark text • SaaS style
+====================================== */
+
 /* HERO SECTION */
 .hero {
-  background: var(--gradient-main);
-  padding: 60px 20px 70px;
+  background: #ffffff;
+  padding: 90px 20px 80px;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background: linear-gradient(to top, var(--bg-dark), transparent);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .hero h1 {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  background: linear-gradient(to right, #fff, #e2e8f0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -2px;
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -1.5px;
+  margin-bottom: 18px;
 }
 
 .hero p {
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  max-width: 600px;
+  font-size: 1.1rem;
+  color: #475569;
+  max-width: 620px;
   margin: 0 auto;
+  line-height: 1.6;
 }
 
 /* BOOK SECTION */
 .book-section {
-  padding: 0 40px 60px;
-  max-width: 1400px;
+  background: #ffffff;
+  padding: 60px 24px 80px;
+  max-width: 1300px;
   margin: 0 auto;
-  position: relative;
-  z-index: 10;
 }
 
 .book-section h2 {
-  font-size: 2rem;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #0f172a;
   margin-bottom: 40px;
-  color: var(--text-main);
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .book-section h2::before {
-  content: '';
-  display: block;
-  width: 5px;
-  height: 30px;
-  background: var(--primary);
-  border-radius: 4px;
+  content: "";
+  width: 4px;
+  height: 28px;
+  background: #2563eb;
+  border-radius: 3px;
 }
 
-/* GRID LAYOUT */
+/* BOOK GRID */
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 35px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 28px;
 }
 
 /* BOOK CARD */
 .book-card {
-  background: var(--bg-card);
-  border-radius: var(--radius);
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .book-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
+/* BOOK COVER */
 .book-card img {
   width: 100%;
-  aspect-ratio: 2/3;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  background: #f1f5f9;
 }
 
-.book-card:hover img {
-  transform: scale(1.05);
-}
-
+/* BOOK INFO */
 .book-card h4 {
-  padding: 15px 15px 5px;
-  font-size: 1.1rem;
+  padding: 16px 16px 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--text-main);
 }
 
 .book-card .author {
-  padding: 0 15px 15px;
+  padding: 0 16px 16px;
   font-size: 0.9rem;
-  color: var(--text-muted);
+  color: #64748b;
 }
 
+/* VIEW DETAILS BUTTON */
 .book-card .btn {
-  width: calc(100% - 30px);
-  margin: 0 15px 20px;
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--primary);
-  text-align: center;
+  display: block;
+  margin: 0 16px 20px;
   padding: 10px;
   border-radius: 8px;
-  display: block;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.9rem;
   font-weight: 600;
-  transition: all 0.3s ease;
+  text-align: center;
+  transition: background 0.25s ease;
 }
 
-.book-card:hover .btn {
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+.book-card .btn:hover {
+  background: #1d4ed8;
 }
 
-/* NAVBAR Styles */
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(12px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: 800;
-  background: var(--gradient-main);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -1px;
-}
-
-.nav nav {
-  display: flex;
-  gap: 30px;
-}
-
-.nav nav a {
-  font-weight: 600;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  position: relative;
-  padding: 5px 0;
-}
-
-.nav nav a:hover {
-  color: var(--text-main);
-}
-
-.nav nav a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary);
-  transition: width 0.3s ease;
-}
-
-.nav nav a:hover::after {
-  width: 100%;
-}
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
+  .hero {
+    padding: 70px 16px 60px;
+  }
+
   .hero h1 {
-    font-size: 2.5rem;
+    font-size: 2.4rem;
     letter-spacing: -1px;
   }
 
   .hero p {
     font-size: 1rem;
-    padding: 0 10px;
   }
 
   .book-section {
-    padding: 0 20px 40px;
-  }
-
-  .book-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 20px;
-  }
-
-  .book-card h4 {
-    font-size: 0.95rem;
+    padding: 40px 16px 60px;
   }
 
   .book-section h2 {
     font-size: 1.5rem;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
   }
+
+  .book-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 18px;
+  }
+}
+
+/* LOAD MORE */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 90px;
+}
+
+.load-more-btn {
+  padding: 12px 30px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #0f172a;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.load-more-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  border-color: #2563eb;
+  color: #2563eb;
 }

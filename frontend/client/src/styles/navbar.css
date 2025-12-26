@@ -1,63 +1,77 @@
 /* NAVBAR */
+
 .navbar {
+    height: 64px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 15px 40px;
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(12px);
+    justify-content: space-between;
+    padding: 0 36px;
+    background: #0f172a;
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Logo */
 .nav-logo {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     font-weight: 800;
-    color: white;
+    color: #ffffff;
     text-decoration: none;
+    line-height: 1;
 }
 
+/* Center nav links */
 .nav-links {
     display: flex;
-    gap: 30px;
+    align-items: center;
+    gap: 26px;
 }
 
+/* Nav links */
 .nav-links a {
-    color: var(--text-muted);
-    font-weight: 500;
+    color: #e5e7eb;
     font-size: 0.95rem;
-    transition: color 0.2s ease;
-    position: relative;
+    font-weight: 500;
     text-decoration: none;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
 }
 
 .nav-links a:hover {
-    color: var(--text-main);
+    color: #ffffff;
 }
 
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -4px;
-    left: 0;
-    background-color: var(--primary);
-    transition: width 0.3s ease;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
+/* Right section */
 .nav-auth {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
 }
+
+/* User text */
+.user-name {
+    color: #e5e7eb;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+/* Buttons */
+.btn-login,
+.btn-logout {
+    line-height: 1;
+    padding: 6px 12px;
+}
+
+/* Remove ANY default list spacing (if using ul/li anywhere) */
+nav ul,
+nav li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
 
 .user-menu {
     display: flex;
@@ -66,7 +80,7 @@
 }
 
 .user-name {
-    color: var(--text-main);
+    color: white;
     font-weight: 500;
 }
 
@@ -74,7 +88,7 @@
     padding: 8px 16px;
     border: 1px solid var(--secondary);
     background: transparent;
-    color: var(--secondary);
+    color: white;
     border-radius: 6px;
     font-size: 0.9rem;
     transition: all 0.2s;
@@ -91,7 +105,7 @@
 }
 
 .btn-login {
-    color: var(--text-main);
+    color: white;
     text-decoration: none;
     font-weight: 500;
     padding: 8px 16px;

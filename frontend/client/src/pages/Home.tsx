@@ -17,6 +17,7 @@ const PLACEHOLDER_IMAGE = "https://placehold.co/400x600?text=No+Cover+Available"
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [visibleBooksCount, setVisibleBooksCount] = useState(8);
 
   useEffect(() => {
     console.log("📡 Fetching books...");
@@ -31,7 +32,13 @@ export default function Home() {
       });
   }, []);
 
+  const handleLoadMore = () => {
+    setVisibleBooksCount(prev => prev + 8);
+  };
+
   console.log("Home Mounted");
+
+  const visibleBooks = books.slice(0, visibleBooksCount);
 
   return (
     <div className="home-container">
@@ -47,7 +54,7 @@ export default function Home() {
         <h2>Books</h2>
 
         <div className="book-grid">
-          {books.map(book => (
+          {visibleBooks.map(book => (
             <div key={book._id} className="book-card">
               <img
                 src={book.coverImage || PLACEHOLDER_IMAGE}
@@ -65,6 +72,14 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {visibleBooksCount < books.length && (
+          <div className="load-more-container">
+            <button className="load-more-btn" onClick={handleLoadMore}>
+              Load More
+            </button>
+          </div>
+        )}
       </section>
 
     </div>

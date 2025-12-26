@@ -17,7 +17,7 @@
 .static-page .content {
     line-height: 1.8;
     font-size: 1.1rem;
-    color: #cad4e0;
+    color: #0c0c0c;
 }
 
 .static-page .content p {
@@ -48,7 +48,7 @@
 }
 
 .faq-item h4 {
-    color: #ffffff;
+    color: #111111;
     margin-bottom: 10px;
 }
 

@@ -17,7 +17,7 @@
 .static-page .content {
     line-height: 1.8;
     font-size: 1.1rem;
-    color: #0c0c0c;
+    color: var(--text-muted);
 }
 
 .static-page .content p {
@@ -40,7 +40,7 @@
 }
 
 .faq-item {
-    background: var(--bg-card);
+    background: var(--card);
     padding: 20px;
     border-radius: var(--radius);
     margin-bottom: 20px;
@@ -48,12 +48,12 @@
 }
 
 .faq-item h4 {
-    color: #111111;
+    color: var(--text-main);
     margin-bottom: 10px;
 }
 
 .contact-form-placeholder {
-    background: var(--bg-card);
+    background: var(--card);
     padding: 30px;
     border-radius: var(--radius);
     text-align: center;

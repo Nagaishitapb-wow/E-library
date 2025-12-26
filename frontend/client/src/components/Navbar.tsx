@@ -47,7 +47,7 @@ export default function Navbar() {
 
     return (
         <nav className="navbar">
-            <Link to="/" className="nav-logo">📚 E-Library</Link>
+            <Link to="/" className="nav-logo">📚 BookHaven</Link>
 
             <button className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? "✕" : "☰"}

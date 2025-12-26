@@ -1,5 +1,6 @@
 import { logout } from "../api/auth";
 import { Link, useNavigate } from "react-router-dom";
+import "../styles/profile.css";
 
 export default function Dashboard() {
   const userJson = localStorage.getItem("user");
@@ -21,54 +22,61 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="center-container">
-      <div className="dashboard-box">
-
-        <h1>
-          Welcome {user ? user.name : "Guest"}
-        </h1>
-
-        <br />
-
-        {/* Logged-in View */}
-        {user && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px", textAlign: "center" }}>
-
-            <Link to="/books" className="dash-link">📚 Browse Books</Link>
-            <Link to="/wishlist" className="dash-link">❤️ Wishlist</Link>
-            <Link to="/borrowed" className="dash-link">📖 Borrowed Books</Link>
-            <Link to="/fines" className="dash-link">💸 My Fines</Link>
-            <Link to="/profile" className="dash-link">👤 Profile</Link>
-
-            <button
-              onClick={handleLogout}
-              style={{
-                background: "#ff3b3b",
-                padding: "10px 22px",
-                border: "none",
-                borderRadius: "6px",
-                color: "#fff",
-                fontSize: "16px",
-                cursor: "pointer",
-                marginTop: "10px",
-                fontWeight: "bold"
-              }}
-            >
-              Logout
-            </button>
-
-          </div>
-        )}
-
-        {/* Guest View */}
-        {!user && (
-          <div style={{ display: "flex", gap: "30px", justifyContent: "center" }}>
-            <Link to="/login" style={{ color: "#fff", fontSize: "19px", fontWeight: "500" }}>Login</Link>
-            <Link to="/signup" style={{ color: "#fff", fontSize: "19px", fontWeight: "500" }}>Signup</Link>
-          </div>
-        )}
-
+    <div className="dashboard-container">
+      {/* HEADER */}
+      <div className="dashboard-header">
+        <h1>Welcome{user ? `, ${user.name}` : ""} </h1>
+        <p>Manage your library activity from one place</p>
       </div>
+
+      {/* LOGGED-IN VIEW */}
+      {user && (
+        <>
+          <div className="dashboard-grid">
+            <Link to="/books" className="dashboard-card">
+              <span className="icon">📚</span>
+              <h3>Browse Books</h3>
+              <p>Explore and borrow books</p>
+            </Link>
+
+            <Link to="/wishlist" className="dashboard-card">
+              <span className="icon">❤️</span>
+              <h3>Wishlist</h3>
+              <p>Your saved books</p>
+            </Link>
+
+            <Link to="/borrowed" className="dashboard-card">
+              <span className="icon">📖</span>
+              <h3>Borrowed Books</h3>
+              <p>Currently borrowed books</p>
+            </Link>
+
+            <Link to="/fines" className="dashboard-card">
+              <span className="icon">💰</span>
+              <h3>My Fines</h3>
+              <p>Pending & paid fines</p>
+            </Link>
+
+            <Link to="/profile" className="dashboard-card">
+              <span className="icon">👤</span>
+              <h3>Profile</h3>
+              <p>View & edit profile</p>
+            </Link>
+          </div>
+
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </>
+      )}
+
+      {/* GUEST VIEW */}
+      {!user && (
+        <div className="guest-actions">
+          <Link to="/login" className="guest-btn primary">Login</Link>
+          <Link to="/signup" className="guest-btn secondary">Sign Up</Link>
+        </div>
+      )}
     </div>
   );
 }

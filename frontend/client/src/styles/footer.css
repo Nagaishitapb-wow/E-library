@@ -1,7 +1,8 @@
 .footer {
-    background: #1e293b;
+    background: #0f172a;
+    /* Same as Navbar */
     color: #f8fafc;
-    padding: 60px 20px 20px;
+    padding: 60px 24px 20px;
     margin-top: 50px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -15,7 +16,7 @@
 }
 
 .footer-section h3 {
-    color: #3b82f6;
+    color: var(--primary);
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 20px;

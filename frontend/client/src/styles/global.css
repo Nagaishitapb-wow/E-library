@@ -3,18 +3,39 @@
 ====================================== */
 
 :root {
+  /* Common */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --radius: 12px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Light Theme (Default) */
   --bg: #ffffff;
   --bg-soft: #f8fafc;
   --card: #ffffff;
-
   --text-main: #0f172a;
-  --text-muted: #475569;
-
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-
+  --text-muted: #64748b;
   --border: #e2e8f0;
-  --radius: 12px;
+  --input-bg: #f8fafc;
+  --overlay: rgba(15, 23, 42, 0.6);
+}
+
+/* Dark Theme Variables */
+[data-theme='dark'] {
+  --bg: #0f172a;
+  --bg-soft: #1e293b;
+  --card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: #334155;
+  --input-bg: #334155;
+  --overlay: rgba(0, 0, 0, 0.8);
+
+  /* Adjust Primary for Dark mode if needed, otherwise keep blue */
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
 }
 
 body {
@@ -22,8 +43,8 @@ body {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text-main);
+  transition: background 0.3s ease, color 0.3s ease;
 }
-
 
 /* Center wrapper for all pages */
 .center-container {
@@ -33,14 +54,15 @@ body {
   height: 100vh;
 }
 
-/* Card UI for login/signup forms */
+/* Auth Cards */
 .auth-card {
-  background: #ffffff;
+  background: var(--card);
   width: 400px;
   padding: 40px;
   border-radius: 16px;
-  color: #111;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  color: var(--text-main);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
   animation: fadeInUp 0.8s ease;
 }
 
@@ -55,27 +77,29 @@ body {
   width: 100%;
   padding: 14px;
   border-radius: 8px;
-  border: 1.5px solid #cfcfcf;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text-main);
   font-size: 16px;
   margin-bottom: 20px;
   box-sizing: border-box;
+  transition: all 0.2s;
 }
 
 .auth-input::placeholder {
-  color: #8f8f8f;
-  opacity: 0.9;
+  color: var(--text-muted);
 }
 
 .auth-input:focus {
-  border-color: #2e78ff;
-  box-shadow: 0 0 6px rgba(46, 120, 255, 0.45);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
   outline: none;
+  background: var(--bg);
 }
 
-/* Button UI */
 .auth-btn {
   width: 100%;
-  background: #2e78ff;
+  background: var(--primary);
   padding: 12px;
   color: #fff;
   border: none;
@@ -84,75 +108,20 @@ body {
   cursor: pointer;
   font-weight: bold;
   margin-top: 5px;
-  transition: 0.25s;
+  transition: 0.2s;
 }
 
 .auth-btn:hover {
-  background: #0043c2;
-  transform: scale(1.04);
+  background: var(--primary-hover);
+  transform: translateY(-2px);
 }
 
-/* Error message */
 .error {
-  color: #c20000;
+  color: #ef4444;
   font-size: 14px;
   margin-bottom: 8px;
   text-align: center;
 }
-
-/* Dashboard Welcome */
-.dashboard-box {
-  text-align: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  padding: 40px 60px;
-  border-radius: 16px;
-  box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.25);
-  animation: fadeIn 0.8s ease-out;
-}
-
-.dashboard-box h1 {
-  font-size: 34px;
-  margin-bottom: 15px;
-}
-
-.reset-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  /* space between elements */
-}
-
-.reset-input {
-  width: 280px;
-  padding: 10px;
-  font-size: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-}
-
-.reset-input:focus {
-  border-color: #2563ff;
-}
-
-.reset-btn {
-  background: #2563ff;
-  padding: 9px 18px;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 15px;
-  margin-top: 4px;
-  transition: .2s;
-}
-
-.reset-btn:hover {
-  background: #1d4ed8;
-}
-
 
 /* Animation */
 @keyframes fadeInUp {
@@ -183,15 +152,6 @@ body {
     width: 90%;
     max-width: 400px;
     padding: 30px 20px;
-  }
-
-  .dashboard-box {
-    padding: 30px 20px;
-    width: 90%;
-  }
-
-  .dashboard-box h1 {
-    font-size: 24px;
   }
 
   body {

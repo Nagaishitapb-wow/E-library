@@ -123,7 +123,16 @@
   }
 
   .wishlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
+  .wishlist-card {
+    padding: 15px;
+  }
+
+  .btn.remove {
+    padding: 10px;
+    font-size: 0.85rem;
   }
 }

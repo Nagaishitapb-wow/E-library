@@ -63,10 +63,13 @@
 /* BOOK CARD */
 .book-card {
   background: var(--card);
-  border-radius: 14px;
-  border: 1px solid var(--border);
+  border-radius: 12px;
   overflow: hidden;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
 }
 
 .book-card:hover {
@@ -108,8 +111,9 @@
 /* VIEW DETAILS BUTTON */
 .book-card .btn {
   display: block;
-  margin: 0 16px 20px;
-  padding: 10px;
+  margin: auto 16px 20px;
+  /* Use margin-top: auto */
+  padding: 12px;
   border-radius: 8px;
   background: var(--primary);
   color: #ffffff;
@@ -148,8 +152,14 @@
   }
 
   .book-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+
+  .book-card .btn {
+    margin: auto 10px 15px;
+    font-size: 0.85rem;
+    padding: 10px;
   }
 }
 

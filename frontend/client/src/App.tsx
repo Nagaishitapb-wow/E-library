@@ -30,51 +30,58 @@ import Footer from "./components/Footer";
 import MyFines from "./pages/MyFines";
 import { ThemeProvider } from "./context/ThemeContext";
 
+import ScrollToTop from "./components/ScrollToTop";
+import BackToTopBtn from "./components/BackToTopBtn";
+
 const App = () => {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <ScrollToTop />
+        <BackToTopBtn />
         <Navbar />
-        <Routes>
+        <div className="main-content fade-in" style={{ flex: 1 }}>
+          <Routes>
 
-          {/* Public Landing Page (like OpenLibrary Home) */}
-          <Route path="/" element={<Home />} />
+            {/* Public Landing Page (like OpenLibrary Home) */}
+            <Route path="/" element={<Home />} />
 
-          {/* Public book browsing allowed */}
-          <Route path="/books" element={<Books />} />
+            {/* Public book browsing allowed */}
+            <Route path="/books" element={<Books />} />
 
-          {/* Auth pages */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/verify-email/:token" element={<VerifyEmail />} />
-          <Route path="/book/:id" element={<BookDetails />} />
+            {/* Auth pages */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/verify-email/:token" element={<VerifyEmail />} />
+            <Route path="/book/:id" element={<BookDetails />} />
 
-          {/* Static Pages from Footer */}
-          <Route path="/about" element={<About />} />
-          <Route path="/mission" element={<Mission />} />
-          <Route path="/authors" element={<Authors />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="/support" element={<Support />} />
-          <Route path="/report-bug" element={<ReportBug />} />
-          <Route path="/request-book" element={<RequestBook />} />
-          <Route path="/categories" element={<Categories />} />
+            {/* Static Pages from Footer */}
+            <Route path="/about" element={<About />} />
+            <Route path="/mission" element={<Mission />} />
+            <Route path="/authors" element={<Authors />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/report-bug" element={<ReportBug />} />
+            <Route path="/request-book" element={<RequestBook />} />
+            <Route path="/categories" element={<Categories />} />
 
-          {/* Only logged-in users can access */}
-          <Route path="/dashboard" element={
-            <ProtectedRoute><Dashboard /></ProtectedRoute>
-          } />
-          <Route path="/borrowed" element={<ProtectedRoute><BorrowedBooks /></ProtectedRoute>} />
-          <Route path="/fines" element={<ProtectedRoute><MyFines /></ProtectedRoute>} />
-          <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            {/* Only logged-in users can access */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute><Dashboard /></ProtectedRoute>
+            } />
+            <Route path="/borrowed" element={<ProtectedRoute><BorrowedBooks /></ProtectedRoute>} />
+            <Route path="/fines" element={<ProtectedRoute><MyFines /></ProtectedRoute>} />
+            <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
-          {/* Admin Routes */}
-          <Route element={<AdminRoute />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Route>
-        </Routes>
+            {/* Admin Routes */}
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
+          </Routes>
+        </div>
 
         <Footer />
         <ToastContainer position="top-center" autoClose={2500} />

@@ -44,6 +44,13 @@ body {
   background: var(--bg);
   color: var(--text-main);
   transition: background 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Center wrapper for all pages */
@@ -51,7 +58,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: calc(100vh - 150px);
+  /* Adjust for navbar/footer height */
+  padding: 40px 0;
 }
 
 /* Auth Cards */
@@ -139,11 +148,17 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
+    transform: translateY(10px);
   }
 
   to {
     opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 /* RESPONSIVE BASE */

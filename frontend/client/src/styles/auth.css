@@ -3,11 +3,11 @@
   max-width: 350px;
   margin: auto;
   padding-top: 40px;
-  font-family: Arial, sans-serif;
 }
 
 .auth-page h1 {
   text-align: center;
+  color: var(--text-main);
 }
 
 .auth-form {
@@ -18,27 +18,42 @@
 }
 
 .auth-form input {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #888;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text-main);
+  transition: all 0.2s;
+}
+
+.auth-form input:focus {
+  border-color: var(--primary);
+  outline: none;
 }
 
 button {
-  background: #007bff;
+  background: var(--primary);
   color: white;
-  padding: 8px;
+  padding: 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--primary-hover);
 }
 
 button:disabled {
-  opacity: 0.6
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .error {
-  color: red;
-  font-size: 14px
+  color: #ef4444;
+  font-size: 14px;
 }
 
 @media (max-width: 480px) {

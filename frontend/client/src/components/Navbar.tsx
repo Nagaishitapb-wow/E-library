@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import NotificationDropdown from "./NotificationDropdown.tsx";
 import "../styles/navbar.css";
 import { logout, api } from "../api/auth";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
     const [showNotif, setShowNotif] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
 
@@ -87,6 +89,10 @@ export default function Navbar() {
                             )}
                         </div>
                     )}
+
+                    <button className="theme-toggle" onClick={toggleTheme}>
+                        {theme === "light" ? "🌙" : "☀️"}
+                    </button>
 
                     {user ? (
                         <div className="user-menu">

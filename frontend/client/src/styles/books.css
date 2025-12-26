@@ -105,6 +105,20 @@
   box-shadow: var(--shadow-lg);
 }
 
+.book-card-img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.book-card-img:hover {
+  transform: scale(1.02);
+}
+
 .book-card h3 {
   font-size: 1.15rem;
   font-weight: 600;

@@ -89,14 +89,20 @@ export default function Books() {
         ) : (
           filteredBooks.map(book => (
             <div key={book._id} className="book-card">
-              <img
-                src={book.coverImage || PLACEHOLDER_IMAGE}
-                alt={book.title}
-                className="book-card-img"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
-                }}
-              />
+              <div
+                className="book-card-img-wrapper"
+                onClick={() => navigate(`/book/${book._id}`)}
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  src={book.coverImage || PLACEHOLDER_IMAGE}
+                  alt={book.title}
+                  className="book-card-img"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+                  }}
+                />
+              </div>
               <h3>{book.title}</h3>
               <p><b>Author:</b> {book.author}</p>
               {book.category && (

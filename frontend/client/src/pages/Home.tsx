@@ -56,13 +56,15 @@ export default function Home() {
         <div className="book-grid">
           {visibleBooks.map(book => (
             <div key={book._id} className="book-card">
-              <img
-                src={book.coverImage || PLACEHOLDER_IMAGE}
-                alt={book.title}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
-                }}
-              />
+              <Link to={`/book/${book._id}`}>
+                <img
+                  src={book.coverImage || PLACEHOLDER_IMAGE}
+                  alt={book.title}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+                  }}
+                />
+              </Link>
               <h4>{book.title}</h4>
               <p className="author">{book.author}</p>
 

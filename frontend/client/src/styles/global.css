@@ -36,6 +36,16 @@
   /* Adjust Primary for Dark mode if needed, otherwise keep blue */
   --primary: #3b82f6;
   --primary-hover: #60a5fa;
+
+  /* Ensure links are visible in dark mode */
+  a {
+    color: #e2e8f0;
+    /* Light gray/white for better contrast */
+  }
+
+  a:hover {
+    color: #ffffff;
+  }
 }
 
 body {

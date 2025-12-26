@@ -6,7 +6,7 @@
 /* HERO SECTION */
 .hero {
   background: var(--bg);
-  padding: 90px 20px 80px;
+  padding: 60px 20px 40px;
   text-align: center;
   border-bottom: 1px solid var(--border);
 }
@@ -30,7 +30,7 @@
 /* BOOK SECTION */
 .book-section {
   background: var(--bg);
-  padding: 60px 24px 80px;
+  padding: 30px 24px 80px;
   max-width: 1300px;
   margin: 0 auto;
 }
@@ -80,6 +80,12 @@
   aspect-ratio: 2 / 3;
   object-fit: cover;
   background: var(--bg-soft);
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.book-card img:hover {
+  transform: scale(1.02);
 }
 
 /* BOOK INFO */
@@ -120,7 +126,7 @@
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .hero {
-    padding: 70px 16px 60px;
+    padding: 40px 16px 30px;
   }
 
   .hero h1 {
@@ -133,7 +139,7 @@
   }
 
   .book-section {
-    padding: 40px 16px 60px;
+    padding: 20px 16px 60px;
   }
 
   .book-section h2 {

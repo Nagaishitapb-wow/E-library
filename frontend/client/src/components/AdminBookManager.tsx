@@ -22,6 +22,7 @@ export default function AdminBookManager() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [editingBook, setEditingBook] = useState<Book | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [formData, setFormData] = useState({
         title: "",
@@ -131,7 +132,7 @@ export default function AdminBookManager() {
         setFormData({
             title: book.title,
             author: book.author,
-            description: "", // Ideally populate this too if available in list or fetch detailed
+            description: "",
             stock: book.stock,
             price: book.price || 0,
             category: book.category?._id || "",
@@ -142,11 +143,25 @@ export default function AdminBookManager() {
         setShowModal(true);
     };
 
+    const filteredBooks = books.filter(book =>
+        book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        book.author.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="admin-header-row">
                 <h2>Books Library</h2>
-                <button className="add-btn" onClick={openAddModal}>+ Add Book</button>
+                <div className="admin-actions-row">
+                    <input
+                        type="text"
+                        placeholder="Search by title or author..."
+                        className="admin-search-input"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button className="add-btn" onClick={openAddModal}>+ Add Book</button>
+                </div>
             </div>
 
             <table className="admin-table">
@@ -161,7 +176,7 @@ export default function AdminBookManager() {
                     </tr>
                 </thead>
                 <tbody>
-                    {books.map(book => (
+                    {filteredBooks.map(book => (
                         <tr key={book._id}>
                             <td>{book.title}</td>
                             <td>{book.author}</td>
@@ -184,6 +199,13 @@ export default function AdminBookManager() {
                             </td>
                         </tr>
                     ))}
+                    {filteredBooks.length === 0 && (
+                        <tr>
+                            <td colSpan={6} style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
+                                No books found matching your search.
+                            </td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
 
@@ -249,9 +271,9 @@ export default function AdminBookManager() {
                                 <textarea rows={3} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
                             </div>
 
-                            <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+                            <div className="form-actions">
                                 <button type="submit" className="add-btn" style={{ marginBottom: 0 }}>Save</button>
-                                <button type="button" className="action-btn" style={{ background: "#9ca3af", color: "white" }} onClick={() => setShowModal(false)}>Cancel</button>
+                                <button type="button" className="btn secondary" onClick={() => setShowModal(false)}>Cancel</button>
                             </div>
                         </form>
                     </div>

@@ -100,3 +100,22 @@
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
 }
+
+@media (max-width: 768px) {
+  .wishlist-container {
+    padding: 30px 20px;
+  }
+
+  .wishlist-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .wishlist-card {
+    padding: 10px;
+  }
+}

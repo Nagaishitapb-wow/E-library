@@ -11,6 +11,7 @@ body {
       #6b73ff 100%);
   height: 100vh;
   color: #fff;
+  overflow-x: hidden;
 }
 
 /* Center wrapper for all pages */
@@ -162,5 +163,28 @@ body {
 
   to {
     opacity: 1;
+  }
+}
+
+/* RESPONSIVE BASE */
+@media (max-width: 768px) {
+  .auth-card {
+    width: 90%;
+    max-width: 400px;
+    padding: 30px 20px;
+  }
+
+  .dashboard-box {
+    padding: 30px 20px;
+    width: 90%;
+  }
+
+  .dashboard-box h1 {
+    font-size: 24px;
+  }
+
+  body {
+    height: auto;
+    min-height: 100vh;
   }
 }

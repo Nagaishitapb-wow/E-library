@@ -151,3 +151,33 @@
     max-height: 90vh;
     overflow-y: auto;
 }
+
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 15px;
+    }
+
+    .admin-dashboard h1 {
+        font-size: 1.6rem;
+    }
+
+    .admin-tabs {
+        flex-wrap: wrap;
+    }
+
+    .admin-tabs button {
+        flex: 1;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+    .admin-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+}

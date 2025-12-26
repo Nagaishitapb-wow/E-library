@@ -12,7 +12,9 @@ import importRoutes from "./routes/importRoutes";
 import userRoutes from "./routes/userRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
+import uploadRoutes from "./routes/uploadRoutes";
 import { Category } from "./models/Category";
+import path from "path";
 
 
 dotenv.config();
@@ -63,6 +65,11 @@ app.use("/api/import", importRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/upload", uploadRoutes);
+
+// Static files
+app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
+
 app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

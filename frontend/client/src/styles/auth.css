@@ -1,5 +1,6 @@
 .auth-page {
-  width: 350px;
+  width: 90%;
+  max-width: 350px;
   margin: auto;
   padding-top: 40px;
   font-family: Arial, sans-serif;
@@ -38,4 +39,10 @@ button:disabled {
 .error {
   color: red;
   font-size: 14px
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding-top: 20px;
+  }
 }

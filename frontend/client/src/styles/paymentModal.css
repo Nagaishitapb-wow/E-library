@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +17,7 @@
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .payment-modal h2 {
@@ -89,4 +89,24 @@
 .payment-modal .pay-btn:disabled {
   background: #90caf9;
   cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .payment-modal {
+    padding: 1.5rem;
+  }
+
+  .payment-modal .row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .payment-modal .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .payment-modal button {
+    width: 100%;
+  }
 }

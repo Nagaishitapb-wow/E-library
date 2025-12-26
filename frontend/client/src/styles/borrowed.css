@@ -94,3 +94,18 @@ h1 {
   text-align: center;
   margin-top: 50px;
 }
+
+@media (max-width: 768px) {
+  .borrowed-container {
+    padding: 30px 20px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .borrowed-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+}

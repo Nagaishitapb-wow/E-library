@@ -29,13 +29,16 @@ export default function ResetPassword() {
         <form onSubmit={handleSubmit}>
           <input
             type="password"
+            className="auth-input"
             placeholder="Enter new password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          {pwdError && <p style={{ color: "red" }}>{pwdError}</p>}
-          <button disabled={!!pwdError}>Update Password</button>
+          {pwdError && <p className="error" style={{ color: "orange", marginBottom: "15px" }}>{pwdError}</p>}
+          <button className="auth-btn" disabled={!!pwdError}>
+            Update Password
+          </button>
 
         </form>
       </div>

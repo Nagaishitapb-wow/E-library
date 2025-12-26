@@ -16,16 +16,16 @@ export default function ForgotPassword() {
       <div className="auth-card">
         <h1>Forgot Password</h1>
 
-        <form onSubmit={handleSubmit} className="reset-wrapper">
+        <form onSubmit={handleSubmit}>
           <input
             type="email"
-            className="reset-input"
+            className="auth-input"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <button type="submit" className="reset-btn">
+          <button type="submit" className="auth-btn">
             Send Reset Link
           </button>
         </form>

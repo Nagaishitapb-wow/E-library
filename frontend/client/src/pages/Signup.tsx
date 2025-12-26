@@ -2,12 +2,13 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { signup } from "../api/auth";
 import { validatePassword } from "../utils/validation";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/auth.css";
 import "../styles/global.css";
 
 interface AxiosErrorShape {
   response?: {
+    status?: number;
     data?: {
       message?: string;
     };
@@ -46,15 +47,20 @@ const Signup = () => {
       await signup({ name, email, password });
       setSuccess(true);
     } catch (err: unknown) {
-      setError(parseError(err));
+      const e = err as AxiosErrorShape;
+      const message = e.response?.data?.message ?? "Something went wrong";
+
+      if (e.response?.status === 409) {
+        setError(`${message}. Redirecting to Login...`);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
-  }
-
-  function parseError(err: unknown): string {
-    const e = err as AxiosErrorShape;
-    return e.response?.data?.message ?? "Something went wrong";
   }
 
 
@@ -179,6 +185,13 @@ const Signup = () => {
             </button>
           )}
         </form>
+
+        <p style={{ marginTop: "18px", fontSize: "15px", textAlign: "center" }}>
+          Already a user?{" "}
+          <Link to="/login" style={{ color: "#2563ff", fontWeight: "bold" }}>
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

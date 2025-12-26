@@ -19,6 +19,12 @@ export async function borrowBook(req: Request, res: Response) {
       return res.status(404).json({ message: "Book not found" });
     }
 
+    // Check if user already has an active borrow for this book
+    const existingBorrow = await Borrow.findOne({ userId, bookId, returned: false });
+    if (existingBorrow) {
+      return res.status(400).json({ message: "You have already borrowed this book" });
+    }
+
     if (book.stock < 1) {
       return res.status(400).json({ message: "Book is out of stock" });
     }

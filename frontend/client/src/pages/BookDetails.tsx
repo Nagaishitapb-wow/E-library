@@ -95,10 +95,7 @@ export default function BookDetails() {
                 if (err.response?.status === 401) {
                   toast.error("Login to borrow and wishlist");
                 } else {
-                  const errorMsg =
-                    err instanceof Error
-                      ? err.message
-                      : err.response?.data?.message || "Borrow failed";
+                  const errorMsg = err.response?.data?.message || err.message || "Borrow failed";
                   toast.error(errorMsg);
                 }
               }
@@ -117,10 +114,7 @@ export default function BookDetails() {
                 if (err.response?.status === 401) {
                   toast.error("Login to borrow and wishlist");
                 } else {
-                  const errorMsg =
-                    err instanceof Error
-                      ? err.message
-                      : err.response?.data?.message || "Wishlist action failed";
+                  const errorMsg = err.response?.data?.message || err.message || "Wishlist action failed";
                   toast.error(errorMsg);
                 }
               }

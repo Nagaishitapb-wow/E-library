@@ -6,11 +6,19 @@ export async function addToWishlist(req: Request, res: Response) {
     const userId = req.user!._id;
     const { bookId } = req.body;
 
+    if (!bookId) {
+      return res.status(400).json({ message: "Book ID is required" });
+    }
+
     const item = await Wishlist.create({ userId, bookId });
 
     res.json({ message: "Book added to wishlist", item });
   } catch (err: any) {
-    res.status(400).json({ message: err.message || "Already in wishlist" });
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "This book is already in your wishlist" });
+    }
+    console.error("Add to wishlist error:", err);
+    res.status(500).json({ message: err.message || "Failed to add to wishlist" });
   }
 }
 

@@ -17,6 +17,7 @@ interface Book {
   category?: { _id: string; name: string; description?: string };
   price?: number;
   stock: number;
+  reviews?: { user: { _id: string; name: string }; rating: number; comment?: string }[];
 }
 
 const PLACEHOLDER_IMAGE = "https://placehold.co/400x600?text=No+Cover+Available";
@@ -38,11 +39,20 @@ export default function BookDetails() {
   const handleRate = async () => {
     try {
       if (!book) return;
-      await api.post(`/books/${book._id}/rate`, { rating: userRating, comment });
+      const res = await api.post(`/books/${book._id}/rate`, { rating: userRating, comment });
       toast.success("⭐ Rating submitted!");
-      // Refresh book data
-      const res = await api.get(`/books/${id}`);
-      setBook(res.data as Book);
+
+      // Update book data with the populated one from response
+      if (res.data.book) {
+        setBook(res.data.book);
+      } else {
+        // Fallback if structure is different
+        const refreshRes = await api.get(`/books/${id}`);
+        setBook(refreshRes.data as Book);
+      }
+
+      setComment("");
+      setUserRating(0);
     } catch (err: any) {
       if (err.response?.status === 401) {
         toast.error("Please login to submit a review");
@@ -155,6 +165,24 @@ export default function BookDetails() {
             onChange={(e) => setComment(e.target.value)}
           />
           <button className="btn rate-submit" onClick={handleRate}>Submit Review</button>
+        </div>
+
+        {/* REVIEWS LIST SECTION */}
+        <div className="reviews-list">
+          <h3>Community Reviews ({book.reviews?.length || 0})</h3>
+          {book.reviews && book.reviews.length > 0 ? (
+            book.reviews.map((rev, idx) => (
+              <div key={idx} className="review-card">
+                <div className="review-header">
+                  <span className="reviewer-name">{rev.user?.name || "Anonymous"}</span>
+                  <span className="reviewer-rating">⭐ {rev.rating}/5</span>
+                </div>
+                {rev.comment && <p className="review-comment">{rev.comment}</p>}
+              </div>
+            ))
+          ) : (
+            <p className="no-reviews">No reviews yet. Be the first to rate!</p>
+          )}
         </div>
 
       </div>

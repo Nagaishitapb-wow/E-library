@@ -35,6 +35,29 @@ export default function AdminBookManager() {
         pdfUrl: ""
     });
 
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const uploadFormData = new FormData();
+        uploadFormData.append("cover", file);
+
+        try {
+            setIsUploading(true);
+            const res = await api.post("/upload/cover", uploadFormData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            setFormData(prev => ({ ...prev, coverImage: res.data.url }));
+            toast.success("Image uploaded!");
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Upload failed");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
     const fetchBooks = async () => {
         try {
             const res = await api.get("/books");
@@ -113,8 +136,8 @@ export default function AdminBookManager() {
             price: book.price || 0,
             category: book.category?._id || "",
             status: book.status,
-            coverImage: "", // Populate if needed
-            pdfUrl: ""
+            coverImage: (book as any).coverImage || "",
+            pdfUrl: (book as any).pdfUrl || ""
         });
         setShowModal(true);
     };
@@ -194,8 +217,32 @@ export default function AdminBookManager() {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label>Cover Image URL</label>
-                                <input value={formData.coverImage} onChange={e => setFormData({ ...formData, coverImage: e.target.value })} />
+                                <label>Cover Image</label>
+                                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileUpload}
+                                        disabled={isUploading}
+                                    />
+                                    {isUploading && <span>Uploading...</span>}
+                                </div>
+                                {formData.coverImage && (
+                                    <div style={{ marginTop: "10px" }}>
+                                        <img
+                                            src={formData.coverImage}
+                                            alt="Preview"
+                                            style={{ width: "80px", height: "120px", borderRadius: "8px", objectFit: "cover" }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, coverImage: "" }))}
+                                            style={{ display: "block", color: "red", background: "none", border: "none", cursor: "pointer", fontSize: "0.8rem" }}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                             <div className="form-group">
                                 <label>Description</label>

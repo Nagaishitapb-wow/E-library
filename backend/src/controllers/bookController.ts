@@ -15,7 +15,10 @@ export async function getAllBooks(req: Request, res: Response) {
 export async function getBookById(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const book = await Book.findById(id).populate("category", "name description");
+    const book = await Book.findById(id)
+      .populate("category", "name description")
+      .populate("reviews.user", "name");
+
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
@@ -72,7 +75,12 @@ export async function rateBook(req: Request, res: Response) {
 
     await book.save();
 
-    res.json({ message: "Rating added/updated", rating: book.rating, reviews: book.reviews });
+    // Re-fetch with populated user names
+    const updatedBook = await Book.findById(id)
+      .populate("category", "name description")
+      .populate("reviews.user", "name");
+
+    res.json({ message: "Rating added/updated", book: updatedBook });
 
   } catch (err: any) {
     res.status(500).json({ message: err.message || "Rating failed" });

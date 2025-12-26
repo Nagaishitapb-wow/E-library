@@ -165,10 +165,20 @@
 @media (max-width: 768px) {
     .profile-container {
         padding: 15px;
+        margin-top: 20px;
+    }
+
+    .profile-container h1 {
+        font-size: 1.8rem;
     }
 
     .profile-card {
         padding: 20px;
+    }
+
+    .profile-field {
+        flex-direction: column;
+        gap: 5px;
     }
 
     .stats-grid {

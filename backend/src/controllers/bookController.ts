@@ -4,13 +4,34 @@ import BorrowedBook from "../models/Borrow";
 
 export async function getAllBooks(req: Request, res: Response) {
   try {
-    const books = await Book.find().populate("category", "name description");
-    res.json(books);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 12;
+    const skip = (page - 1) * limit;
+
+    const [books, total] = await Promise.all([
+      Book.find()
+        .populate("category", "name description")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 }),
+      Book.countDocuments(),
+    ]);
+
+    res.json({
+      data: books,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (err) {
     console.error("Error fetching books", err);
     res.status(500).json({ message: "Failed to fetch books" });
   }
 }
+
 
 export async function getBookById(req: Request, res: Response) {
   try {

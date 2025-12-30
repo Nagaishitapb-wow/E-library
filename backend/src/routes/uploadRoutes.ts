@@ -9,8 +9,10 @@ router.post("/cover", authRequired, adminRequired, upload.single("cover"), (req:
         return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Construct the URL to the file
-    const fileUrl = `${process.env.BACKEND_URL || 'http://localhost:4000'}/uploads/book-covers/${req.file.filename}`;
+    // Construct full URL using the request origin
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const fileUrl = `${protocol}://${host}/uploads/book-covers/${req.file.filename}`;
 
     res.json({
         message: "File uploaded successfully",

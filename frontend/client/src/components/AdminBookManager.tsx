@@ -12,6 +12,13 @@ interface Book {
     status: string;
 }
 
+interface PaginationInfo {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}
+
 interface Category {
     _id: string;
     name: string;
@@ -23,6 +30,10 @@ export default function AdminBookManager() {
     const [showModal, setShowModal] = useState(false);
     const [editingBook, setEditingBook] = useState<Book | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+
+    const BOOKS_PER_PAGE = 20;
 
     const [formData, setFormData] = useState({
         title: "",
@@ -61,8 +72,9 @@ export default function AdminBookManager() {
 
     const fetchBooks = async () => {
         try {
-            const res = await api.get("/books");
-            setBooks(res.data);
+            const res = await api.get(`/books?page=${currentPage}&limit=${BOOKS_PER_PAGE}`);
+            setBooks(res.data.data || res.data);
+            setPagination(res.data.pagination);
         } catch {
             toast.error("Failed to load books");
         }
@@ -70,8 +82,8 @@ export default function AdminBookManager() {
 
     const fetchCategories = async () => {
         try {
-            const res = await api.get("/categories");
-            setCategories(res.data);
+            const res = await api.get("/categories?page=1&limit=100");
+            setCategories(res.data.data || res.data);
         } catch {
             console.error("Failed to load categories");
         }
@@ -79,6 +91,9 @@ export default function AdminBookManager() {
 
     useEffect(() => {
         fetchBooks();
+    }, [currentPage]);
+
+    useEffect(() => {
         fetchCategories();
     }, []);
 
@@ -132,7 +147,7 @@ export default function AdminBookManager() {
         setFormData({
             title: book.title,
             author: book.author,
-            description: "",
+            description: (book as any).description || "",
             stock: book.stock,
             price: book.price || 0,
             category: book.category?._id || "",
@@ -143,10 +158,16 @@ export default function AdminBookManager() {
         setShowModal(true);
     };
 
+    // Client-side search filter for current page
     const filteredBooks = books.filter(book =>
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         book.author.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     return (
         <div>
@@ -208,6 +229,72 @@ export default function AdminBookManager() {
                     )}
                 </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            {pagination && pagination.totalPages > 1 && (
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "24px",
+                    marginTop: "30px",
+                    padding: "20px",
+                    background: "var(--card)",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border)"
+                }}>
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        style={{
+                            padding: "10px 20px",
+                            background: currentPage === 1 ? "var(--bg-soft)" : "var(--primary)",
+                            color: currentPage === 1 ? "var(--text-muted)" : "white",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontWeight: "600",
+                            cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                            opacity: currentPage === 1 ? 0.5 : 1
+                        }}
+                    >
+                        ← Previous
+                    </button>
+
+                    <div style={{
+                        fontSize: "1rem",
+                        fontWeight: "600",
+                        color: "var(--text-main)",
+                        textAlign: "center"
+                    }}>
+                        Page {currentPage} of {pagination.totalPages}
+                        <div style={{
+                            fontSize: "0.85rem",
+                            color: "var(--text-muted)",
+                            fontWeight: "500",
+                            marginTop: "4px"
+                        }}>
+                            ({pagination.total} total books)
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === pagination.totalPages}
+                        style={{
+                            padding: "10px 20px",
+                            background: currentPage === pagination.totalPages ? "var(--bg-soft)" : "var(--primary)",
+                            color: currentPage === pagination.totalPages ? "var(--text-muted)" : "white",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontWeight: "600",
+                            cursor: currentPage === pagination.totalPages ? "not-allowed" : "pointer",
+                            opacity: currentPage === pagination.totalPages ? 0.5 : 1
+                        }}
+                    >
+                        Next →
+                    </button>
+                </div>
+            )}
 
             {showModal && (
                 <div className="modal-overlay">

@@ -16,8 +16,8 @@ export default function AdminCategoryManager() {
 
     const fetchCategories = async () => {
         try {
-            const res = await api.get("/categories");
-            setCategories(res.data);
+            const res = await api.get("/categories?page=1&limit=100");
+            setCategories(res.data.data || res.data);
         } catch (error) {
             toast.error("Failed to load categories");
         }

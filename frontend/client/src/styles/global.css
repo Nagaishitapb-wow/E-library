@@ -20,6 +20,15 @@
   --border: #e2e8f0;
   --input-bg: #f8fafc;
   --overlay: rgba(15, 23, 42, 0.6);
+
+  /* Touch Targets */
+  --min-tap-target: 44px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 /* Dark Theme Variables */

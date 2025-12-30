@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import NotificationDropdown from "./NotificationDropdown.tsx";
 import "../styles/navbar.css";
@@ -58,17 +58,17 @@ export default function Navbar() {
             <div className={`nav-container ${isMenuOpen ? "active" : ""}`}>
                 <div className="nav-links">
                     {user?.role === "admin" ? (
-                        <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin Panel</Link>
+                        <NavLink to="/admin" onClick={() => setIsMenuOpen(false)}>Admin Panel</NavLink>
                     ) : (
                         <>
-                            <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
-                            <Link to="/books" onClick={() => setIsMenuOpen(false)}>Browse Books</Link>
+                            <NavLink to="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
+                            <NavLink to="/books" onClick={() => setIsMenuOpen(false)}>Browse Books</NavLink>
 
                             {user && (
                                 <>
-                                    <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                                    <Link to="/wishlist" onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
-                                    <Link to="/borrowed" onClick={() => setIsMenuOpen(false)}>My Books</Link>
+                                    <NavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</NavLink>
+                                    <NavLink to="/wishlist" onClick={() => setIsMenuOpen(false)}>Wishlist</NavLink>
+                                    <NavLink to="/borrowed" onClick={() => setIsMenuOpen(false)}>My Books</NavLink>
                                 </>
                             )}
                         </>

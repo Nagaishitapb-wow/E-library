@@ -59,8 +59,12 @@
     margin: 0;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
     color: #ffffff;
+    /* Explicit highlight for active page */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    /* Subtle glow */
 }
 
 /* Right section */
@@ -343,5 +347,27 @@ nav li {
     .user-menu {
         flex-direction: column;
         text-align: center;
+    }
+
+    /* Fix Notification Dropdown on Mobile */
+    .nav-notif {
+        position: static;
+        /* Allow dropdown to be relative to window if needed, or just handle inside */
+    }
+
+    .notification-dropdown {
+        position: fixed;
+        top: 80px;
+        /* Below navbar */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        /* Responsive width */
+        max-width: 350px;
+        right: auto;
+        z-index: 2000;
+        /* Ensure on top */
+        max-height: 60vh;
+        /* Prevent too tall */
     }
 }

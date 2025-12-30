@@ -7,8 +7,8 @@ const Categories = () => {
     const [categories, setCategories] = useState<{ _id: string, name: string }[]>([]);
 
     useEffect(() => {
-        api.get("/categories")
-            .then((res: any) => setCategories(res.data))
+        api.get("/categories?page=1&limit=100")
+            .then((res: any) => setCategories(res.data.data || res.data))
             .catch((err: any) => console.error("Error fetching categories", err));
     }, []);
 

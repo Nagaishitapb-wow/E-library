@@ -23,8 +23,63 @@
   font-size: 1.1rem;
   color: var(--text-muted);
   max-width: 620px;
-  margin: 0 auto;
+  margin: 0 auto 30px;
   line-height: 1.6;
+}
+
+/* SEARCH CONTAINER */
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.home-search-input {
+  width: 100%;
+  padding: 14px 50px 14px 20px;
+  font-size: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text-main);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.home-search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--text-muted);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.clear-search-btn:hover {
+  background: var(--text-main);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.no-results {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  padding: 60px 20px;
 }
 
 /* BOOK SECTION */

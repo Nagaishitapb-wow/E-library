@@ -1,11 +1,41 @@
-import { logout } from "../api/auth";
+import { logout, api } from "../api/auth";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../styles/profile.css";
+
+interface UserStats {
+  totalBorrowed: number;
+  currentlyBorrowed: number;
+  totalFines: number;
+  wishlistCount: number;
+}
 
 export default function Dashboard() {
   const userJson = localStorage.getItem("user");
   const user = userJson ? JSON.parse(userJson) : null;
   const navigate = useNavigate();
+
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserStats();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+
+  const fetchUserStats = async () => {
+    try {
+      const res = await api.get("/user/profile");
+      setStats(res.data.statistics);
+    } catch (error) {
+      console.error("Failed to fetch stats:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   async function handleLogout() {
     try {
@@ -32,6 +62,49 @@ export default function Dashboard() {
       {/* LOGGED-IN VIEW */}
       {user && (
         <>
+          {/* STATISTICS SECTION */}
+          {loading ? (
+            <div className="stats-loading">Loading your statistics...</div>
+          ) : stats ? (
+            <div className="stats-grid">
+              <div className="stat-card">
+                <span className="stat-icon">📚</span>
+                <div className="stat-info">
+                  <h3>{stats.totalBorrowed}</h3>
+                  <p>Total Borrowed</p>
+                </div>
+              </div>
+
+              <div className="stat-card">
+                <span className="stat-icon">📖</span>
+                <div className="stat-info">
+                  <h3>{stats.currentlyBorrowed}</h3>
+                  <p>Currently Borrowed</p>
+                </div>
+              </div>
+
+              <div className={`stat-card ${stats.totalFines > 0 ? 'fines-warning' : ''}`}>
+                <span className="stat-icon">💰</span>
+                <div className="stat-info">
+                  <h3 className={stats.totalFines > 0 ? 'text-danger' : 'text-success'}>
+                    ₹{stats.totalFines}
+                  </h3>
+                  <p>Total Fines</p>
+                </div>
+              </div>
+
+              <div className="stat-card">
+                <span className="stat-icon">❤️</span>
+                <div className="stat-info">
+                  <h3>{stats.wishlistCount}</h3>
+                  <p>Wishlist Items</p>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {/* QUICK ACTIONS */}
+          <h2 className="section-title">Quick Actions</h2>
           <div className="dashboard-grid">
             <Link to="/books" className="dashboard-card">
               <span className="icon">📚</span>

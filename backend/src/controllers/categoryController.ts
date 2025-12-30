@@ -3,8 +3,24 @@ import { Category } from "../models/Category";
 
 export async function getAllCategories(req: Request, res: Response) {
     try {
-        const categories = await Category.find();
-        res.json(categories);
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 50;
+        const skip = (page - 1) * limit;
+
+        const [categories, total] = await Promise.all([
+            Category.find().skip(skip).limit(limit),
+            Category.countDocuments()
+        ]);
+
+        res.json({
+            data: categories,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        });
     } catch (err) {
         console.error("Error fetching categories", err);
         res.status(500).json({ message: "Failed to fetch categories" });

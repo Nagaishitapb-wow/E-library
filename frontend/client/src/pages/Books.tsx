@@ -22,36 +22,66 @@ interface Category {
   description?: string;
 }
 
+interface PaginationInfo {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export default function Books() {
   const [books, setBooks] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch books
-    api.get("/books")
-      .then((res: any) => setBooks(res.data))
-      .catch(() => alert("Failed to fetch books"))
-      .finally(() => setLoading(false));
+  const BOOKS_PER_PAGE = 12;
 
-    // Fetch categories
-    api.get("/categories")
-      .then((res: any) => setCategories(res.data))
+  useEffect(() => {
+    fetchBooks();
+  }, [currentPage, selectedCategory]);
+
+  useEffect(() => {
+    // Fetch categories once
+    api.get("/categories?page=1&limit=100")
+      .then((res: any) => setCategories(res.data.data || res.data))
       .catch(() => console.log("Failed to fetch categories"));
   }, []);
 
-  // Filter books based on category and search term
+  const fetchBooks = () => {
+    setLoading(true);
+    const categoryParam = selectedCategory ? `&category=${selectedCategory}` : "";
+
+    api.get(`/books?page=${currentPage}&limit=${BOOKS_PER_PAGE}${categoryParam}`)
+      .then((res: any) => {
+        setBooks(res.data.data || res.data);
+        setPagination(res.data.pagination);
+      })
+      .catch(() => alert("Failed to fetch books"))
+      .finally(() => setLoading(false));
+  };
+
+  // Filter books based on search term (client-side for current page)
   const filteredBooks = books.filter(book => {
-    const matchesCategory = !selectedCategory || book.category?._id === selectedCategory;
     const matchesSearch = !searchTerm ||
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesSearch;
   });
 
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setCurrentPage(1); // Reset to first page when category changes
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="books-page">
@@ -69,7 +99,7 @@ export default function Books() {
 
           <select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => handleCategoryChange(e.target.value)}
             className="category-filter"
           >
             <option value="">All Categories</option>
@@ -125,6 +155,32 @@ export default function Books() {
           ))
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="pagination-controls">
+          <button
+            className="pagination-btn"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            ← Previous
+          </button>
+
+          <div className="pagination-info">
+            Page {currentPage} of {pagination.totalPages}
+            <span className="total-books"> ({pagination.total} books)</span>
+          </div>
+
+          <button
+            className="pagination-btn"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === pagination.totalPages}
+          >
+            Next →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

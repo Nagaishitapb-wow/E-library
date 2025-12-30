@@ -13,20 +13,37 @@ interface UserStats {
     createdAt: string;
 }
 
+interface PaginationInfo {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}
+
 export default function AdminUserManager() {
     const [users, setUsers] = useState<UserStats[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+
+    const USERS_PER_PAGE = 25;
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [currentPage]);
 
     const fetchUsers = async () => {
         try {
-            const res = await api.get("/user");
-            setUsers(res.data);
+            const res = await api.get(`/user?page=${currentPage}&limit=${USERS_PER_PAGE}`);
+            setUsers(res.data.data || res.data);
+            setPagination(res.data.pagination);
         } catch (error) {
             toast.error("Failed to load users");
         }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     return (
@@ -69,6 +86,72 @@ export default function AdminUserManager() {
                     ))}
                 </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            {pagination && pagination.totalPages > 1 && (
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "24px",
+                    marginTop: "30px",
+                    padding: "20px",
+                    background: "var(--card)",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border)"
+                }}>
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        style={{
+                            padding: "10px 20px",
+                            background: currentPage === 1 ? "var(--bg-soft)" : "var(--primary)",
+                            color: currentPage === 1 ? "var(--text-muted)" : "white",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontWeight: "600",
+                            cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                            opacity: currentPage === 1 ? 0.5 : 1
+                        }}
+                    >
+                        ← Previous
+                    </button>
+
+                    <div style={{
+                        fontSize: "1rem",
+                        fontWeight: "600",
+                        color: "var(--text-main)",
+                        textAlign: "center"
+                    }}>
+                        Page {currentPage} of {pagination.totalPages}
+                        <div style={{
+                            fontSize: "0.85rem",
+                            color: "var(--text-muted)",
+                            fontWeight: "500",
+                            marginTop: "4px"
+                        }}>
+                            ({pagination.total} total users)
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === pagination.totalPages}
+                        style={{
+                            padding: "10px 20px",
+                            background: currentPage === pagination.totalPages ? "var(--bg-soft)" : "var(--primary)",
+                            color: currentPage === pagination.totalPages ? "var(--text-muted)" : "white",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontWeight: "600",
+                            cursor: currentPage === pagination.totalPages ? "not-allowed" : "pointer",
+                            opacity: currentPage === pagination.totalPages ? 0.5 : 1
+                        }}
+                    >
+                        Next →
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

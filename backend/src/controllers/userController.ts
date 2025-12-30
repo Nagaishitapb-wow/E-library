@@ -8,7 +8,14 @@ import bcrypt from "bcrypt";
 // ===================== GET ALL USERS WITH STATS =====================
 export async function getAllUsers(req: Request, res: Response) {
     try {
-        const users = await User.find().select("-passwordHash"); // Exclude passwords
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 50;
+        const skip = (page - 1) * limit;
+
+        const [users, total] = await Promise.all([
+            User.find().select("-passwordHash").skip(skip).limit(limit),
+            User.countDocuments()
+        ]);
 
         // Aggregate stats for each user (Parallelize for performance)
         const userStats = await Promise.all(
@@ -35,7 +42,15 @@ export async function getAllUsers(req: Request, res: Response) {
             })
         );
 
-        res.json(userStats);
+        res.json({
+            data: userStats,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        });
     } catch (err: any) {
         console.error("Get users error:", err);
         res.status(500).json({ message: "Failed to fetch users" });

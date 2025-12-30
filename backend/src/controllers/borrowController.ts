@@ -159,12 +159,29 @@ export async function getUserBorrowedBooks(req: Request, res: Response) {
 
 export async function getAllBorrowedBooks(req: Request, res: Response) {
   try {
-    const borrowed = await Borrow.find()
-      .populate("userId", "name email")
-      .populate("bookId", "title")
-      .sort({ borrowDate: -1 });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 50;
+    const skip = (page - 1) * limit;
 
-    res.json(borrowed);
+    const [borrowed, total] = await Promise.all([
+      Borrow.find()
+        .populate("userId", "name email")
+        .populate("bookId", "title")
+        .sort({ borrowDate: -1 })
+        .skip(skip)
+        .limit(limit),
+      Borrow.countDocuments()
+    ]);
+
+    res.json({
+      data: borrowed,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (err: any) {
     console.error("Fetch all borrows error:", err);
     res.status(500).json({ message: "Failed to fetch borrowed books" });

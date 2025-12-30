@@ -30,6 +30,9 @@ export default function BorrowedBooks() {
   }, []);
 
   async function handleReturnRequest(borrowId: string) {
+    const confirmReturn = window.confirm("Are you sure you want to return this book?");
+    if (!confirmReturn) return;
+
     try {
       await requestReturn(borrowId);
       toast.success("Return request sent to admin!");

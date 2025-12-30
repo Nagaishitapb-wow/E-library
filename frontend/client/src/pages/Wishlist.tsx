@@ -57,6 +57,9 @@ export default function Wishlist() {
               className="btn remove"
               onClick={async () => {
                 try {
+                  const confirmDelete = window.confirm("Are you sure you want to remove this book from your wishlist?");
+                  if (!confirmDelete) return;
+
                   await removeFromWishlist(item.bookId._id);
                   setWishlist(prev => prev.filter(w => w.bookId._id !== item.bookId._id));
                   // optionally toast success

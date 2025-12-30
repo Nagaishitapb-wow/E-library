@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { api } from "../api/auth";
 import { toast } from "react-toastify";
 
@@ -296,7 +297,7 @@ export default function AdminBookManager() {
                 </div>
             )}
 
-            {showModal && (
+            {showModal && createPortal(
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h3>{editingBook ? "Edit Book" : "Add New Book"}</h3>
@@ -364,7 +365,8 @@ export default function AdminBookManager() {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

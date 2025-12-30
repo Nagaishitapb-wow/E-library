@@ -9,10 +9,9 @@ router.post("/cover", authRequired, adminRequired, upload.single("cover"), (req:
         return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Construct full URL using the request origin
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const fileUrl = `${protocol}://${host}/uploads/book-covers/${req.file.filename}`;
+    // Return relative path for better portability across devices
+    // Frontend will prepend the correct API_BASE_URL
+    const fileUrl = `/uploads/book-covers/${req.file.filename}`;
 
     res.json({
         message: "File uploaded successfully",

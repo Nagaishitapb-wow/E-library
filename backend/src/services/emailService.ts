@@ -48,7 +48,7 @@ export const sendEmail = async (
       }
     );
 
-    logger.info(`Email sent to ${JSON.stringify(recipients)}: ${response.data?.messageId || 'Success'}`);
+    logger.info(`Email sent to ${JSON.stringify(recipients)}: ${(response.data as any)?.messageId || 'Success'}`);
   } catch (error: any) {
     logger.error('Email failed:', error.response?.data || error.message);
     // We don't throw here to ensure main flow continues in controllers if needed, 

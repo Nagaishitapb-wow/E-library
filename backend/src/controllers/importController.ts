@@ -6,7 +6,7 @@ import type { Request, Response } from "express";
 export async function importBooks(req: Request, res: Response) {
   try {
     const response = await axios.get("https://openlibrary.org/subjects/fantasy.json?limit=50");
-    const books = response.data.works;
+    const books = (response.data as any).works;
 
     for (const item of books) {
       await Book.findOneAndUpdate(

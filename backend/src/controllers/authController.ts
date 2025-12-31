@@ -88,10 +88,13 @@ export async function loginController(req: Request, res: Response) {
     const token = generateToken(user._id.toString(), role);
 
     // Set HTTP-only cookie
+    // secure: true REQUIRES https. If testing on local network (http), it must be false.
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction, // False in dev so it works on HTTP (mobile IP)
+      sameSite: isProduction ? "none" : "lax", // 'none' requires secure:true. 'lax' works for dev.
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 

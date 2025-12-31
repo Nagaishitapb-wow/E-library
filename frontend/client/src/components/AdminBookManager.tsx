@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { api } from "../api/auth";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../utils/imageUrl";
 
 interface Book {
     _id: string;
@@ -340,7 +341,7 @@ export default function AdminBookManager() {
                                 {formData.coverImage && (
                                     <div style={{ marginTop: "10px" }}>
                                         <img
-                                            src={formData.coverImage}
+                                            src={getImageUrl(formData.coverImage)}
                                             alt="Preview"
                                             style={{ width: "80px", height: "120px", borderRadius: "8px", objectFit: "cover" }}
                                         />

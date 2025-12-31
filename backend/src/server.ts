@@ -35,11 +35,25 @@ const allowedOrigins: string[] = [
 
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        if (!origin || allowedOrigins.includes(origin) || (origin.startsWith("https://e-library-") && origin.endsWith(".vercel.app"))) {
-            callback(null, true);
-        } else {
-            callback(null, false);
-        }
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        // Check against allowed origins list
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+
+        // Allow Vercel deployments pattern
+        if (origin.startsWith("https://e-library-") && origin.endsWith(".vercel.app")) return callback(null, true);
+
+        // Allow Local Network IPs (192.168.x.x, 10.x.x.x, 172.x.x.x) for development
+        // This is safe-ish for local dev, and essential for mobile testing
+        const isLocalNetwork =
+            origin.startsWith("http://192.168.") ||
+            origin.startsWith("http://10.") ||
+            origin.startsWith("http://172.");
+
+        if (isLocalNetwork) return callback(null, true);
+
+        callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],

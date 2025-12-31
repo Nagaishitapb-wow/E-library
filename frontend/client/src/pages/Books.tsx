@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../api/auth";
 import "../styles/books.css";
 import SkeletonBook from "../components/SkeletonBook";
+import { getImageUrl } from "../utils/imageUrl";
 
 interface Book {
   _id: string;
@@ -129,7 +130,7 @@ export default function Books() {
                 style={{ cursor: "pointer" }}
               >
                 <img
-                  src={book.coverImage || PLACEHOLDER_IMAGE}
+                  src={getImageUrl(book.coverImage) || PLACEHOLDER_IMAGE}
                   alt={book.title}
                   className="book-card-img"
                   onError={(e) => {

@@ -18,6 +18,15 @@ export const getImageUrl = (path: string | undefined): string => {
             securePath = securePath.replace("http://", "https://");
         }
 
+        // CORRECTION: If we are on the deployed Vercel app, we CANNOT access localhost.
+        // We must point to the production Render backend instead.
+        const PROD_BACKEND = "https://e-library-jtx2.onrender.com";
+        const isDeployed = typeof window !== 'undefined' && !window.location.hostname.includes("localhost");
+
+        if (securePath.includes("localhost:4000") && isDeployed) {
+            return securePath.replace("http://localhost:4000", PROD_BACKEND);
+        }
+
         // OPTIONAL: Fix legacy localhost URLs on the fly for mobile users
         // If the stored URL is 'http://localhost:4000/...' but we are on a mobile
         // device where localhost is unreachable, we replace it with the current BASE_URL.

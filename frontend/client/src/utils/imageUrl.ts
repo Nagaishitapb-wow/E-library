@@ -9,15 +9,22 @@ const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:4000";
 export const getImageUrl = (path: string | undefined): string => {
     if (!path) return "";
 
-    // If it's a placeholder or external URL, return as is
+    // If it's a placeholder or external URL, return as is (but upgrade HTTP to HTTPS)
     if (path.startsWith("http") || path.startsWith("data:")) {
+        let securePath = path;
+
+        // Auto-upgrade insecure HTTP links to HTTPS
+        if (securePath.startsWith("http://") && !securePath.includes("localhost")) {
+            securePath = securePath.replace("http://", "https://");
+        }
+
         // OPTIONAL: Fix legacy localhost URLs on the fly for mobile users
         // If the stored URL is 'http://localhost:4000/...' but we are on a mobile
         // device where localhost is unreachable, we replace it with the current BASE_URL.
-        if (path.includes("localhost:4000") && !BASE_URL.includes("localhost:4000")) {
-            return path.replace("http://localhost:4000", BASE_URL);
+        if (securePath.includes("localhost:4000") && !BASE_URL.includes("localhost:4000")) {
+            return securePath.replace("http://localhost:4000", BASE_URL);
         }
-        return path;
+        return securePath;
     }
 
     // DYNAMIC HOST DETECTION

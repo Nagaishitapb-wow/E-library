@@ -9,9 +9,8 @@ router.post("/cover", authRequired, adminRequired, upload.single("cover"), (req:
         return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Return relative path for better portability across devices
-    // Frontend will prepend the correct API_BASE_URL
-    const fileUrl = `/uploads/book-covers/${req.file.filename}`;
+    // Multer-storage-cloudinary puts the Cloudinary URL in req.file.path
+    const fileUrl = req.file.path;
 
     res.json({
         message: "File uploaded successfully",

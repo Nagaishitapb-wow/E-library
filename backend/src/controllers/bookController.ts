@@ -6,15 +6,21 @@ export async function getAllBooks(req: Request, res: Response) {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 12;
+    const category = req.query.category as string;
     const skip = (page - 1) * limit;
 
+    const filter: any = {};
+    if (category) {
+      filter.category = category;
+    }
+
     const [books, total] = await Promise.all([
-      Book.find()
+      Book.find(filter)
         .populate("category", "name description")
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 }),
-      Book.countDocuments(),
+      Book.countDocuments(filter),
     ]);
 
     res.json({

@@ -1,6 +1,9 @@
 import type { Request, Response } from "express";
 import { Book } from "../models/Book";
 import BorrowedBook from "../models/Borrow";
+import { escapeRegExp } from "../utils/regexHelper";
+import { Wishlist } from "../models/Wishlist";
+import { Notification } from "../models/Notification";
 
 export async function getAllBooks(req: Request, res: Response) {
   try {
@@ -118,6 +121,19 @@ export async function createBook(req: Request, res: Response) {
   try {
     const { title, author, description, coverImage, category, price, stock, totalStock, isbn } = req.body;
 
+    const safeTitle = escapeRegExp(title);
+    const safeAuthor = escapeRegExp(author);
+
+    const existingBook = await Book.findOne({
+      title: { $regex: new RegExp(`^${safeTitle}$`, "i") },
+      author: { $regex: new RegExp(`^${safeAuthor}$`, "i") }
+    });
+
+    if (existingBook) {
+      return res.status(400).json({ message: "Book with this Title and Author already exists" });
+    }
+
+
     const newBook = new Book({
       title,
       author,
@@ -137,8 +153,7 @@ export async function createBook(req: Request, res: Response) {
   }
 }
 
-import { Wishlist } from "../models/Wishlist";
-import { Notification } from "../models/Notification";
+
 
 export async function updateBook(req: Request, res: Response) {
   try {

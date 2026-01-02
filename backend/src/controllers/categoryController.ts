@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { Category } from "../models/Category";
+import { escapeRegExp } from "../utils/regexHelper";
 
 export async function getAllCategories(req: Request, res: Response) {
     try {
@@ -49,7 +50,10 @@ export async function createCategory(req: Request, res: Response) {
             return res.status(400).json({ message: "Category name is required" });
         }
 
-        const existingCategory = await Category.findOne({ name });
+        const safeName = escapeRegExp(name);
+        const existingCategory = await Category.findOne({
+            name: { $regex: new RegExp(`^${safeName}$`, "i") }
+        });
         if (existingCategory) {
             return res.status(400).json({ message: "Category already exists" });
         }

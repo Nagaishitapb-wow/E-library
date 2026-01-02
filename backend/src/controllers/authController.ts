@@ -161,9 +161,14 @@ export async function verifyEmailController(req: Request, res: Response) {
 export async function forgotPasswordController(req: Request, res: Response) {
   try {
     const { email } = req.body;
+    console.log("🔑 Forgot Password Request for:", email);
+
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json({ message: "Email not found" });
+    if (!user) {
+      console.log("❌ User not found for email:", email);
+      return res.status(400).json({ message: "Email not found" });
+    }
 
     const token = crypto.randomBytes(20).toString("hex");
     user.resetToken = token;

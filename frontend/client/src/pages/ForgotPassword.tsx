@@ -7,8 +7,12 @@ export default function ForgotPassword() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await api.post("/auth/forgot-password", { email });
-    alert("Reset email sent!");
+    try {
+      await api.post("/auth/forgot-password", { email });
+      alert("Reset email sent!");
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Failed to send reset email");
+    }
   }
 
   return (

@@ -12,11 +12,15 @@ export default function ResetPassword() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await api.post("/auth/reset-password", {
-      token,
-      newPassword: password,
-    });
-    alert("Password reset successful!");
+    try {
+      await api.post("/auth/reset-password", {
+        token,
+        newPassword: password,
+      });
+      alert("Password reset successful!");
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Password reset failed");
+    }
   }
 
 

@@ -4,6 +4,7 @@ import { api } from "../api/auth";
 import "../styles/books.css";
 import SkeletonBook from "../components/SkeletonBook";
 import { getImageUrl } from "../utils/imageUrl";
+import Loader from "../components/Loader";
 
 interface Book {
   _id: string;
@@ -90,6 +91,8 @@ export default function Books() {
     setCurrentPage(newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (loading && books.length === 0) return <Loader fullPage message="Opening the library catalog..." />;
 
   return (
     <div className="books-page">

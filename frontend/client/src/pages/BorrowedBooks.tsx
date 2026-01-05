@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getMyBorrowedBooks, requestReturn, payFine } from "../api/borrow";
 import { toast } from "react-toastify";
 import PaymentModal, { type PaymentDetails } from "../components/PaymentModal";
+import ConfirmModal from "../components/ConfirmModal";
+import Loader from "../components/Loader";
 import "../styles/borrowed.css";
 
 interface BorrowedBook {
@@ -26,11 +28,20 @@ import { useNavigate } from "react-router-dom";
 
 export default function BorrowedBooks() {
   const [books, setBooks] = useState<BorrowedBook[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedFineBook, setSelectedFineBook] = useState<BorrowedBook | null>(null);
   const navigate = useNavigate();
 
+  // Return Modal State
+  const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
+  const [bookToReturn, setBookToReturn] = useState<BorrowedBook | null>(null);
+
   useEffect(() => {
-    getMyBorrowedBooks().then(setBooks).catch(() => toast.error("Failed to load Borrowed Books"));
+    setLoading(true);
+    getMyBorrowedBooks()
+      .then(setBooks)
+      .catch(() => toast.error("Failed to load Borrowed Books"))
+      .finally(() => setLoading(false));
   }, []);
 
   async function handleReturnRequest(book: BorrowedBook) {
@@ -39,36 +50,35 @@ export default function BorrowedBooks() {
     const dueDate = new Date(book.dueDate);
     const isOverdue = now > dueDate;
 
-    // We need to verify if there's a fine to pay. 
-    // If backend hasn't calculated 'fineAmount' yet (it's 0 until paid/returned generally, or we calc on fly), we calc here.
-    // If checking 'fineAmount' from DB is not reliable for active books, we use logic.
-    // Logic: If overdue AND !isFinePaid -> Redirect.
     if (isOverdue && !book.isFinePaid) {
-      // Calculate days to be sure it's actually fine-able (grace period?) - assuming strict > dueDate
       const lateTime = now.getTime() - dueDate.getTime();
       const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
 
       if (lateDays > 0) {
         toast.warning("Book is overdue! Please pay the fine to return.");
-        // Assuming we have useNavigate hook, which we need to add.
-        // window.location.href = `/fine/${book._id}`; // or use navigate
-        // Let's use useNavigate.
         navigate(`/fine/${book._id}`);
-        return; // We'll handle navigation via hook in component body
+        return;
       }
     }
 
-    const confirmReturn = window.confirm("Are you sure you want to return this book?");
-    if (!confirmReturn) return;
+    setBookToReturn(book);
+    setIsReturnModalOpen(true);
+  }
+
+  const handleConfirmReturn = async () => {
+    if (!bookToReturn) return;
 
     try {
-      await requestReturn(book._id);
+      await requestReturn(bookToReturn._id);
       toast.success("Return request sent to admin!");
-      setBooks(prev => prev.map(b => b._id === book._id ? { ...b, returnRequested: true } : b));
+      setBooks(prev => prev.map(b => b._id === bookToReturn._id ? { ...b, returnRequested: true } : b));
     } catch {
       toast.error("Request failed");
+    } finally {
+      setIsReturnModalOpen(false);
+      setBookToReturn(null);
     }
-  }
+  };
 
   async function handlePayFine(_details: PaymentDetails) {
     if (!selectedFineBook) return;
@@ -85,6 +95,8 @@ export default function BorrowedBooks() {
       toast.error("Payment failed");
     }
   }
+
+  if (loading) return <Loader fullPage message="Fetching your library activity..." />;
 
   return (
     <div className="borrowed-container">
@@ -132,7 +144,7 @@ export default function BorrowedBooks() {
             <button
               className={`return-btn ${b.returnRequested ? "pending" : ""}`}
               onClick={() => !b.returnRequested && handleReturnRequest(b)}
-              disabled={b.returnRequested || b.fineAmount > 0}
+              disabled={b.returnRequested || (b.fineAmount > 0 && !b.isFinePaid)}
             >
               {b.returnRequested ? "⏳ Return Pending" : "🔙 Request Return"}
             </button>
@@ -148,6 +160,16 @@ export default function BorrowedBooks() {
           amount={selectedFineBook.fineAmount}
         />
       )}
+
+      <ConfirmModal
+        isOpen={isReturnModalOpen}
+        title="Return Book"
+        message={`Are you sure you want to request a return for "${bookToReturn?.bookId.title}"?`}
+        onConfirm={handleConfirmReturn}
+        onCancel={() => setIsReturnModalOpen(false)}
+        confirmText="Request Return"
+        type="info"
+      />
     </div>
   );
 }

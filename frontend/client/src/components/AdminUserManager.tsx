@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/auth";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 interface UserStats {
     _id: string;
@@ -79,9 +80,11 @@ export default function AdminUserManager() {
                 </div>
             </div>
 
-            {isLoading && (
-                <div style={{ textAlign: "center", padding: "10px", color: "var(--primary)", fontWeight: "600" }}>
-                    Updating search results...
+            {isLoading && users.length === 0 && <Loader fullPage message="Accessing member records..." />}
+
+            {isLoading && users.length > 0 && (
+                <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+                    <Loader size="small" message="Updating list..." />
                 </div>
             )}
 

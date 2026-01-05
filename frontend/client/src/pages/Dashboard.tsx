@@ -1,6 +1,7 @@
 import { logout, api } from "../api/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Loader from "../components/Loader";
 import "../styles/profile.css";
 
 interface UserStats {
@@ -64,7 +65,9 @@ export default function Dashboard() {
         <>
           {/* STATISTICS SECTION */}
           {loading ? (
-            <div className="stats-loading">Loading your statistics...</div>
+            <div style={{ display: "flex", justifyContent: "center", padding: "40px 0" }}>
+              <Loader message="Loading your statistics..." />
+            </div>
           ) : stats ? (
             <div className="stats-grid">
               <div className="stat-card">

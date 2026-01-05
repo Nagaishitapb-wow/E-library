@@ -58,4 +58,94 @@
     border-radius: var(--radius);
     text-align: center;
     border: 1px solid var(--primary);
+    margin-bottom: 30px;
+}
+
+.or-divider {
+    text-align: center;
+    position: relative;
+    margin: 40px 0;
+}
+
+.or-divider::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    z-index: 1;
+}
+
+.or-divider span {
+    background: var(--bg);
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.support-form {
+    background: var(--card);
+    padding: 40px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.support-form h3 {
+    margin-top: 0 !important;
+    margin-bottom: 25px !important;
+    text-align: center;
+}
+
+.support-form .form-group {
+    margin-bottom: 20px;
+}
+
+.support-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.support-form input,
+.support-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.support-form input:focus,
+.support-form textarea:focus {
+    border-color: var(--primary);
+}
+
+.support-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.support-form .btn-primary {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
 }

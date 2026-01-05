@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/auth";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 interface Notification {
     _id: string;
@@ -62,7 +63,13 @@ export default function NotificationDropdown({ onClose, onUnreadChange }: Props)
                 <button onClick={markAllRead} className="mark-all-btn">Mark all read</button>
             </div>
             <div className="notifications-list">
-                {loading ? <p>Loading...</p> : notifications.length === 0 ? <p className="no-notif">No notifications</p> : (
+                {loading ? (
+                    <div style={{ padding: "30px", display: "flex", justifyContent: "center" }}>
+                        <Loader size="small" message="Fetching alerts..." />
+                    </div>
+                ) : notifications.length === 0 ? (
+                    <p className="no-notif">No notifications</p>
+                ) : (
                     (notifications as Notification[]).map((n: Notification) => (
                         <div
                             key={n._id}

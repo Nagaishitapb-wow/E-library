@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { getWishlist, removeFromWishlist } from "../api/wishlist";
+import ConfirmModal from "../components/ConfirmModal";
+import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 import "../styles/wishlist.css";
 
 interface WishlistItem {
@@ -19,6 +22,10 @@ export default function Wishlist() {
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);  // FIXED TYPE
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
+
   useEffect(() => {
     async function loadWishlist() {
       try {
@@ -33,7 +40,27 @@ export default function Wishlist() {
     loadWishlist();
   }, []);
 
-  if (loading) return <h2>Loading...</h2>;
+  const handleRemoveClick = (bookId: string) => {
+    setSelectedBookId(bookId);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmRemove = async () => {
+    if (!selectedBookId) return;
+    try {
+      await removeFromWishlist(selectedBookId);
+      setWishlist(prev => prev.filter(w => w.bookId._id !== selectedBookId));
+      toast.success("Book removed from wishlist");
+    } catch (e) {
+      toast.error("Failed to remove book");
+      console.error(e);
+    } finally {
+      setIsModalOpen(false);
+      setSelectedBookId(null);
+    }
+  };
+
+  if (loading) return <Loader fullPage message="Fetching your wishlist..." />;
 
   return (
     <div className="wishlist-container">
@@ -55,22 +82,23 @@ export default function Wishlist() {
 
             <button
               className="btn remove"
-              onClick={async () => {
-                try {
-                  const confirmDelete = window.confirm("Are you sure you want to remove this book from your wishlist?");
-                  if (!confirmDelete) return;
-
-                  await removeFromWishlist(item.bookId._id);
-                  setWishlist(prev => prev.filter(w => w.bookId._id !== item.bookId._id));
-                  // optionally toast success
-                } catch (e) { console.error(e); }
-              }}
+              onClick={() => handleRemoveClick(item.bookId._id)}
             >
               Remove ❌
             </button>
           </div>
         ))}
       </div>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Remove from Wishlist"
+        message="Are you sure you want to remove this book from your wishlist?"
+        onConfirm={handleConfirmRemove}
+        onCancel={() => setIsModalOpen(false)}
+        confirmText="Remove"
+        type="danger"
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import "../styles/bookDetails.css";
 import { borrowBook } from "../api/borrow";
 import { toast } from "react-toastify";
 import { addToWishlist } from "../api/wishlist";
+import Loader from "../components/Loader";
 
 interface Book {
   _id: string;
@@ -62,7 +63,7 @@ export default function BookDetails() {
     }
   };
 
-  if (!book) return <h2 className="loading">Loading book...</h2>;
+  if (!book) return <Loader fullPage message="Fetching book details..." />;
 
   return (
     <div className="book-details-container">

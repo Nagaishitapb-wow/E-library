@@ -1,4 +1,5 @@
 import "../styles/staticPages.css";
+import SupportForm from "../components/SupportForm";
 
 const ReportBug = () => {
     return (
@@ -10,6 +11,12 @@ const ReportBug = () => {
                     <p>Please send bug reports to: <strong>engineering@e-library.com</strong></p>
                     <p>Include as much detail as possible, such as screenshots and steps to reproduce the issue.</p>
                 </div>
+
+                <div className="or-divider">
+                    <span>OR</span>
+                </div>
+
+                <SupportForm type="bug" title="Bug Report" />
             </div>
         </div>
     );

@@ -14,6 +14,7 @@ import categoryRoutes from "./routes/categoryRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
 import activityRoutes from "./routes/activityRoutes";
+import supportRoutes from "./routes/supportRoutes";
 import { Category } from "./models/Category";
 import path from "path";
 
@@ -82,6 +83,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/activity", activityRoutes);
+app.use("/api/support", supportRoutes);
 
 // Static files
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));

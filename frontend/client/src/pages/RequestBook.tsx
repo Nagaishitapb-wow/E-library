@@ -1,4 +1,5 @@
 import "../styles/staticPages.css";
+import SupportForm from "../components/SupportForm";
 
 const RequestBook = () => {
     return (
@@ -10,6 +11,12 @@ const RequestBook = () => {
                     <p>Send your book requests to: <strong>curation@e-library.com</strong></p>
                     <p>Please include the book title and author name.</p>
                 </div>
+
+                <div className="or-divider">
+                    <span>OR</span>
+                </div>
+
+                <SupportForm type="request" title="Book Request" />
             </div>
         </div>
     );

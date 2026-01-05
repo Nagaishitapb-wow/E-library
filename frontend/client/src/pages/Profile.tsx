@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getUserProfile, updateUserProfile, changePassword } from "../api/user";
 import { validatePassword } from "../utils/validation";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 import "../styles/profile.css";
 
 interface UserProfile {
@@ -98,8 +99,8 @@ export default function Profile() {
         }
     }
 
-    if (loading) return <h2 className="loading">Loading profile...</h2>;
-    if (!profile) return <h2 className="loading">Profile not found</h2>;
+    if (loading) return <Loader fullPage message="Fetching your profile details..." />;
+    if (!profile) return <div className="profile-container"><h1>Profile not found</h1></div>;
 
     return (
         <div className="profile-container">

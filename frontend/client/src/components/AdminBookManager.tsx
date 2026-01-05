@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 import { api } from "../api/auth";
 import { toast } from "react-toastify";
 import { getImageUrl } from "../utils/imageUrl";
+import ConfirmModal from "./ConfirmModal";
+import Loader from "./Loader";
 
 interface Book {
     _id: string;
@@ -29,11 +31,16 @@ interface Category {
 export default function AdminBookManager() {
     const [books, setBooks] = useState<Book[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingBook, setEditingBook] = useState<Book | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+
+    // Delete Modal State
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [bookToDelete, setBookToDelete] = useState<string | null>(null);
 
     const BOOKS_PER_PAGE = 20;
 
@@ -115,11 +122,14 @@ export default function AdminBookManager() {
 
     const fetchBooks = async () => {
         try {
+            setLoading(true);
             const res = await api.get(`/books?page=${currentPage}&limit=${BOOKS_PER_PAGE}`);
             setBooks(res.data.data || res.data);
             setPagination(res.data.pagination);
         } catch {
             toast.error("Failed to load books");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -158,14 +168,22 @@ export default function AdminBookManager() {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm("Delete this book?")) return;
+    const openDeleteModal = (id: string) => {
+        setBookToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!bookToDelete) return;
         try {
-            await api.delete(`/books/${id}`);
+            await api.delete(`/books/${bookToDelete}`);
             toast.success("Book deleted");
             fetchBooks();
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Delete failed");
+        } finally {
+            setIsDeleteModalOpen(false);
+            setBookToDelete(null);
         }
     };
 
@@ -283,42 +301,49 @@ export default function AdminBookManager() {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredBooks.map(book => (
-                        <tr key={book._id}>
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedBookIds.includes(book._id)}
-                                    onChange={() => toggleSelectBook(book._id)}
-                                />
-                            </td>
-                            <td>{book.title}</td>
-                            <td>{book.author}</td>
-                            <td>{book.category?.name || "N/A"}</td>
-                            <td>{book.stock}</td>
-                            <td>
-                                <span style={{
-                                    padding: "4px 8px",
-                                    borderRadius: "4px",
-                                    background: book.stock > 0 ? "#d1fae5" : "#fee2e2",
-                                    color: book.stock > 0 ? "#065f46" : "#991b1b",
-                                    fontSize: "0.85rem"
-                                }}>
-                                    {book.stock > 0 ? "Available" : "Out of Stock"}
-                                </span>
-                            </td>
-                            <td>
-                                <button className="action-btn edit-btn" onClick={() => openEditModal(book)}>Edit</button>
-                                <button className="action-btn delete-btn" onClick={() => handleDelete(book._id)}>Delete</button>
+                    {loading ? (
+                        <tr>
+                            <td colSpan={7} style={{ textAlign: "center", padding: "40px" }}>
+                                <Loader message="Fetching books..." />
                             </td>
                         </tr>
-                    ))}
-                    {filteredBooks.length === 0 && (
+                    ) : filteredBooks.length === 0 ? (
                         <tr>
                             <td colSpan={7} style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
                                 No books found matching your search.
                             </td>
                         </tr>
+                    ) : (
+                        filteredBooks.map(book => (
+                            <tr key={book._id}>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedBookIds.includes(book._id)}
+                                        onChange={() => toggleSelectBook(book._id)}
+                                    />
+                                </td>
+                                <td>{book.title}</td>
+                                <td>{book.author}</td>
+                                <td>{book.category?.name || "N/A"}</td>
+                                <td>{book.stock}</td>
+                                <td>
+                                    <span style={{
+                                        padding: "4px 8px",
+                                        borderRadius: "4px",
+                                        background: book.stock > 0 ? "#d1fae5" : "#fee2e2",
+                                        color: book.stock > 0 ? "#065f46" : "#991b1b",
+                                        fontSize: "0.85rem"
+                                    }}>
+                                        {book.stock > 0 ? "Available" : "Out of Stock"}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button className="action-btn edit-btn" onClick={() => openEditModal(book)}>Edit</button>
+                                    <button className="action-btn delete-btn" onClick={() => openDeleteModal(book._id)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))
                     )}
                 </tbody>
             </table>
@@ -460,6 +485,16 @@ export default function AdminBookManager() {
                 </div>,
                 document.body
             )}
+
+            <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                title="Delete Book"
+                message="Are you sure you want to permanently delete this book? This action cannot be undone."
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setIsDeleteModalOpen(false)}
+                confirmText="Delete"
+                type="danger"
+            />
         </div>
     );
 }

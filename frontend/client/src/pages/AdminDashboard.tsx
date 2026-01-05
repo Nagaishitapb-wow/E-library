@@ -4,10 +4,11 @@ import AdminBookManager from "../components/AdminBookManager.tsx";
 import AdminBorrowManager from "../components/AdminBorrowManager.tsx";
 import AdminUserManager from "../components/AdminUserManager.tsx";
 import AdminActivityLogs from "../components/AdminActivityLogs.tsx";
+import AdminSupportManager from "../components/AdminSupportManager.tsx";
 import "../styles/adminDashboard.css";
 
 export default function AdminDashboard() {
-    const [activeTab, setActiveTab] = useState<"books" | "categories" | "borrowing" | "users" | "logs">("books");
+    const [activeTab, setActiveTab] = useState<"books" | "categories" | "borrowing" | "users" | "logs" | "support">("books");
 
     return (
         <div className="admin-dashboard">
@@ -39,6 +40,12 @@ export default function AdminDashboard() {
                     Users
                 </button>
                 <button
+                    className={activeTab === "support" ? "active" : ""}
+                    onClick={() => setActiveTab("support")}
+                >
+                    Support & Requests
+                </button>
+                <button
                     className={activeTab === "logs" ? "active" : ""}
                     onClick={() => setActiveTab("logs")}
                 >
@@ -51,6 +58,7 @@ export default function AdminDashboard() {
                 {activeTab === "categories" && <AdminCategoryManager />}
                 {activeTab === "borrowing" && <AdminBorrowManager />}
                 {activeTab === "users" && <AdminUserManager />}
+                {activeTab === "support" && <AdminSupportManager />}
                 {activeTab === "logs" && <AdminActivityLogs />}
             </div>
         </div>

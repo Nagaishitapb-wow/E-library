@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { api } from "../api/auth";
 import "../styles/books.css";
 import SkeletonBook from "../components/SkeletonBook";
@@ -34,7 +34,8 @@ export default function Books() {
   const [books, setBooks] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState<string>(searchParams.get("search") || "");
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
@@ -45,6 +46,12 @@ export default function Books() {
   useEffect(() => {
     fetchBooks();
   }, [currentPage, selectedCategory]);
+
+  useEffect(() => {
+    // Sync search term from URL if it changes
+    const search = searchParams.get("search") || "";
+    setSearchTerm(search);
+  }, [searchParams]);
 
   useEffect(() => {
     // Fetch categories once

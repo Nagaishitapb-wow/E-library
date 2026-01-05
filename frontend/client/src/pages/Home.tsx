@@ -17,16 +17,14 @@ const PLACEHOLDER_IMAGE = "https://placehold.co/400x600?text=No+Cover+Available"
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
-  const [visibleBooksCount, setVisibleBooksCount] = useState(8);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     console.log("📡 Fetching books...");
 
-    api.get("/books?page=1&limit=100")
+    api.get("/books?page=1&limit=5")
       .then((res: any) => {
         console.log("📘 Books received:", res.data);
-        // Handle paginated response structure
         setBooks(res.data.data || res.data);
       })
       .catch((err: any) => {
@@ -34,13 +32,9 @@ export default function Home() {
       });
   }, []);
 
-  const handleLoadMore = () => {
-    setVisibleBooksCount(prev => prev + 8);
-  };
 
   console.log("Home Mounted");
 
-  // Filter books based on search term
   const filteredBooks = books.filter(book => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
@@ -49,8 +43,6 @@ export default function Home() {
       book.author.toLowerCase().includes(searchLower)
     );
   });
-
-  const visibleBooks = filteredBooks.slice(0, visibleBooksCount);
 
   return (
     <div className="home-container">
@@ -67,17 +59,21 @@ export default function Home() {
             placeholder="Search books by title or author..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                window.location.href = `/books?search=${encodeURIComponent(searchTerm)}`;
+              }
+            }}
             className="home-search-input"
           />
-          {searchTerm && (
-            <button
-              className="clear-search-btn"
-              onClick={() => setSearchTerm("")}
-              aria-label="Clear search"
-            >
-              ✕
-            </button>
-          )}
+          <button
+            className="search-submit-btn"
+            onClick={() => {
+              window.location.href = `/books?search=${encodeURIComponent(searchTerm)}`;
+            }}
+          >
+            Search
+          </button>
         </div>
       </section>
 
@@ -90,7 +86,7 @@ export default function Home() {
         ) : (
           <>
             <div className="book-grid">
-              {visibleBooks.map(book => (
+              {filteredBooks.map(book => (
                 <div key={book._id} className="book-card">
                   <Link to={`/book/${book._id}`}>
                     <img
@@ -111,13 +107,11 @@ export default function Home() {
               ))}
             </div>
 
-            {visibleBooksCount < filteredBooks.length && (
-              <div className="load-more-container">
-                <button className="load-more-btn" onClick={handleLoadMore}>
-                  Load More
-                </button>
-              </div>
-            )}
+            <div className="load-more-container">
+              <Link to="/books" className="load-more-btn" style={{ textDecoration: 'none', display: 'inline-block' }}>
+                Browse More Books
+              </Link>
+            </div>
           </>
         )}
       </section>

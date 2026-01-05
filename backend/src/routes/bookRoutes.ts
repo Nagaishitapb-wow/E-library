@@ -6,13 +6,15 @@ import {
     createBook,
     updateBook,
     deleteBook,
-    bulkUpdateCategory
+    bulkUpdateCategory,
+    getPublicStats
 } from "../controllers/bookController";
 import { authRequired, adminRequired } from "../middleware/auth";
 
 const router = Router();
 
 router.get("/", getAllBooks);
+router.get("/stats", getPublicStats);
 router.get("/:id", getBookById);
 router.patch("/bulk-update-category", authRequired, adminRequired, bulkUpdateCategory);
 router.post("/", authRequired, adminRequired, createBook);

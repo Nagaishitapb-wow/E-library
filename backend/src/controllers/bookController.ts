@@ -4,6 +4,7 @@ import BorrowedBook from "../models/Borrow";
 import { escapeRegExp } from "../utils/regexHelper";
 import { Wishlist } from "../models/Wishlist";
 import { Notification } from "../models/Notification";
+import { User } from "../models/User";
 import { logActivity } from "./activityController";
 
 export async function getAllBooks(req: Request, res: Response) {
@@ -11,6 +12,7 @@ export async function getAllBooks(req: Request, res: Response) {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 12;
     const category = req.query.category as string;
+    const sortBy = req.query.sortBy as string || "createdAt";
     const skip = (page - 1) * limit;
 
     const filter: any = {};
@@ -18,12 +20,19 @@ export async function getAllBooks(req: Request, res: Response) {
       filter.category = category;
     }
 
+    const sortOptions: any = {};
+    if (sortBy === "rating") {
+      sortOptions.rating = -1;
+    } else {
+      sortOptions.createdAt = -1;
+    }
+
     const [books, total] = await Promise.all([
       Book.find(filter)
         .populate("category", "name description")
         .skip(skip)
         .limit(limit)
-        .sort({ createdAt: -1 }),
+        .sort(sortOptions),
       Book.countDocuments(filter),
     ]);
 
@@ -257,3 +266,23 @@ export async function bulkUpdateCategory(req: Request, res: Response) {
 }
 
 
+
+// ===================== GET PUBLIC STATS =====================
+export async function getPublicStats(req: Request, res: Response) {
+  try {
+    const [totalBooks, totalUsers, activeBorrows] = await Promise.all([
+      Book.countDocuments(),
+      User.countDocuments(),
+      BorrowedBook.countDocuments({ returned: false })
+    ]);
+
+    res.json({
+      totalBooks,
+      totalUsers,
+      activeBorrows
+    });
+  } catch (err: any) {
+    console.error("Stats Error:", err);
+    res.status(500).json({ message: "Failed to fetch stats" });
+  }
+}

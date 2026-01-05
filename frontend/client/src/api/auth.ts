@@ -20,6 +20,20 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+// Response interceptor for session expiration
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Clear local storage
+      localStorage.removeItem("user");
+      // Redirect to login page
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 interface SignupData {
   name: string;
   email: string;

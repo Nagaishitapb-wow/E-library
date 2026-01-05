@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getMyBorrowedBooks, requestReturn, payFine } from "../api/borrow";
 import { toast } from "react-toastify";
+import { Library, CheckCircle, Clock, Undo2 } from "lucide-react";
 import PaymentModal, { type PaymentDetails } from "../components/PaymentModal";
 import ConfirmModal from "../components/ConfirmModal";
 import Loader from "../components/Loader";
@@ -23,8 +25,6 @@ interface BorrowedBook {
 }
 
 const PLACEHOLDER_IMAGE = "https://placehold.co/400x600?text=No+Cover+Available";
-
-import { useNavigate } from "react-router-dom";
 
 export default function BorrowedBooks() {
   const [books, setBooks] = useState<BorrowedBook[]>([]);
@@ -100,7 +100,9 @@ export default function BorrowedBooks() {
 
   return (
     <div className="borrowed-container">
-      <h1>📘 My Borrowed Books</h1>
+      <h1 className="borrowed-title">
+        <Library size={32} /> My Borrowed Books
+      </h1>
 
       {books.length === 0 ? <p className="empty">No borrowed books yet…</p> : null}
 
@@ -137,7 +139,9 @@ export default function BorrowedBooks() {
 
             {b.isFinePaid && b.fineAmount > 0 && (
               <div className="fine-section" style={{ background: "rgba(34, 197, 94, 0.1)", borderColor: "rgba(34, 197, 94, 0.2)" }}>
-                <p className="fine" style={{ color: "#22c55e", margin: 0 }}>✓ Fine Paid</p>
+                <p className="fine" style={{ color: "#22c55e", margin: 0 }}>
+                  <CheckCircle size={18} /> Fine Paid
+                </p>
               </div>
             )}
 
@@ -146,7 +150,17 @@ export default function BorrowedBooks() {
               onClick={() => !b.returnRequested && handleReturnRequest(b)}
               disabled={b.returnRequested || (b.fineAmount > 0 && !b.isFinePaid)}
             >
-              {b.returnRequested ? "⏳ Return Pending" : "🔙 Request Return"}
+              {b.returnRequested ? (
+                <>
+                  <Clock size={18} />
+                  Return Pending
+                </>
+              ) : (
+                <>
+                  <Undo2 size={18} />
+                  Request Return
+                </>
+              )}
             </button>
           </div>
         ))}

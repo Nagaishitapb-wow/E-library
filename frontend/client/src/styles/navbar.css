@@ -39,6 +39,9 @@
     color: #ffffff;
     text-decoration: none;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 /* Center nav links */

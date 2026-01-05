@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getWishlist, removeFromWishlist } from "../api/wishlist";
+import { Heart, Trash2 } from "lucide-react";
 import ConfirmModal from "../components/ConfirmModal";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
@@ -64,7 +65,9 @@ export default function Wishlist() {
 
   return (
     <div className="wishlist-container">
-      <h1>My Wishlist ❤️</h1>
+      <h1 className="wishlist-title">
+        My Wishlist <Heart size={32} fill="#ef4444" color="#ef4444" />
+      </h1>
 
       <div className="wishlist-grid">
         {wishlist.map(item => (
@@ -84,7 +87,7 @@ export default function Wishlist() {
               className="btn remove"
               onClick={() => handleRemoveClick(item.bookId._id)}
             >
-              Remove ❌
+              <Trash2 size={18} /> Remove
             </button>
           </div>
         ))}

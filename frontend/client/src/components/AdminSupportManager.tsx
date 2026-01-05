@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api/auth";
 import { toast } from "react-toastify";
+import { Bug, FileText, CheckCircle, Lock, Unlock, Clock } from "lucide-react";
 import Loader from "./Loader";
 
 interface Ticket {
@@ -107,8 +108,9 @@ const AdminSupportManager: React.FC = () => {
                             tickets.map(ticket => (
                                 <tr key={ticket._id}>
                                     <td>
-                                        <span className={`badge ${ticket.type === "bug" ? "danger" : "info"}`}>
-                                            {ticket.type === "bug" ? "🐞 Bug" : "📚 Request"}
+                                        <span className={`badge ${ticket.type === "bug" ? "danger" : "info"}`} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                                            {ticket.type === "bug" ? <Bug size={14} /> : <FileText size={14} />}
+                                            {ticket.type === "bug" ? "Bug" : "Request"}
                                         </span>
                                     </td>
                                     <td>
@@ -135,7 +137,7 @@ const AdminSupportManager: React.FC = () => {
                                                     onClick={() => updateStatus(ticket._id, "in-progress")}
                                                     title="Mark as In Progress"
                                                 >
-                                                    ⏳
+                                                    <Clock size={18} />
                                                 </button>
                                             )}
                                             {ticket.status !== "resolved" && ticket.status !== "closed" && (
@@ -144,7 +146,7 @@ const AdminSupportManager: React.FC = () => {
                                                     onClick={() => updateStatus(ticket._id, "resolved")}
                                                     title="Mark as Resolved"
                                                 >
-                                                    ✅
+                                                    <CheckCircle size={18} />
                                                 </button>
                                             )}
                                             {ticket.status !== "closed" && (
@@ -153,7 +155,7 @@ const AdminSupportManager: React.FC = () => {
                                                     onClick={() => updateStatus(ticket._id, "closed")}
                                                     title="Close Ticket"
                                                 >
-                                                    🔒
+                                                    <Lock size={18} />
                                                 </button>
                                             )}
                                             {(ticket.status === "resolved" || ticket.status === "closed") && (
@@ -162,7 +164,7 @@ const AdminSupportManager: React.FC = () => {
                                                     onClick={() => updateStatus(ticket._id, "open")}
                                                     title="Reopen Ticket"
                                                 >
-                                                    🔓
+                                                    <Unlock size={18} />
                                                 </button>
                                             )}
                                         </div>

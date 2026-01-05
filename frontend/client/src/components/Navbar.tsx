@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Library, Bell, Moon, Sun, Menu, X } from "lucide-react";
 import NotificationDropdown from "./NotificationDropdown.tsx";
 import "../styles/navbar.css";
 import { logout, api } from "../api/auth";
@@ -49,10 +50,13 @@ export default function Navbar() {
 
     return (
         <nav className="navbar">
-            <Link to="/" className="nav-logo">📚 BookHaven</Link>
+            <Link to="/" className="nav-logo">
+                <Library size={24} />
+                <span>BookHaven</span>
+            </Link>
 
             <button className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? "✕" : "☰"}
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
 
             <div className={`nav-container ${isMenuOpen ? "active" : ""}`}>
@@ -79,7 +83,8 @@ export default function Navbar() {
                     {user && (
                         <div className="nav-notif">
                             <button className="notif-btn" onClick={() => setShowNotif(!showNotif)}>
-                                🔔 {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+                                <Bell size={20} />
+                                {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
                             </button>
                             {showNotif && (
                                 <NotificationDropdown
@@ -91,7 +96,7 @@ export default function Navbar() {
                     )}
 
                     <button className="theme-toggle" onClick={toggleTheme}>
-                        {theme === "light" ? "🌙" : "☀️"}
+                        {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
                     </button>
 
                     {user ? (

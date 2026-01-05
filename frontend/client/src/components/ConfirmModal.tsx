@@ -1,5 +1,5 @@
-import React from "react";
 import { createPortal } from "react-dom";
+import { AlertTriangle, Info, Lightbulb } from "lucide-react";
 import "../styles/confirmModal.css";
 
 interface ConfirmModalProps {
@@ -29,9 +29,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div className="modal-overlay confirm-modal-overlay">
             <div className="modal-content confirm-modal-content">
                 <div className={`modal-header-icon ${type}`}>
-                    {type === "danger" && "⚠️"}
-                    {type === "warning" && "💡"}
-                    {type === "info" && "ℹ️"}
+                    {type === "danger" && <AlertTriangle size={48} />}
+                    {type === "warning" && <Lightbulb size={48} />}
+                    {type === "info" && <Info size={48} />}
                 </div>
                 <h3>{title}</h3>
                 <p>{message}</p>

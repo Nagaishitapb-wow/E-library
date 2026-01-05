@@ -1,6 +1,7 @@
 import { logout, api } from "../api/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Library, BookOpen, CircleDollarSign, Heart, Search, User } from "lucide-react";
 import Loader from "../components/Loader";
 import "../styles/profile.css";
 
@@ -71,7 +72,7 @@ export default function Dashboard() {
           ) : stats ? (
             <div className="stats-grid">
               <div className="stat-card">
-                <span className="stat-icon">📚</span>
+                <span className="stat-icon"><Library size={28} /></span>
                 <div className="stat-info">
                   <h3>{stats.totalBorrowed}</h3>
                   <p>Total Borrowed</p>
@@ -79,7 +80,7 @@ export default function Dashboard() {
               </div>
 
               <div className="stat-card">
-                <span className="stat-icon">📖</span>
+                <span className="stat-icon"><BookOpen size={28} /></span>
                 <div className="stat-info">
                   <h3>{stats.currentlyBorrowed}</h3>
                   <p>Currently Borrowed</p>
@@ -87,7 +88,7 @@ export default function Dashboard() {
               </div>
 
               <div className="stat-card">
-                <span className="stat-icon">💰</span>
+                <span className="stat-icon"><CircleDollarSign size={28} /></span>
                 <div className="stat-info">
                   <h3>
                     ₹{stats.totalFines}
@@ -97,7 +98,7 @@ export default function Dashboard() {
               </div>
 
               <div className="stat-card">
-                <span className="stat-icon">❤️</span>
+                <span className="stat-icon"><Heart size={28} /></span>
                 <div className="stat-info">
                   <h3>{stats.wishlistCount}</h3>
                   <p>Wishlist Items</p>
@@ -110,31 +111,31 @@ export default function Dashboard() {
           <h2 className="section-title">Quick Actions</h2>
           <div className="dashboard-grid">
             <Link to="/books" className="dashboard-card">
-              <span className="icon">📚</span>
+              <span className="icon"><Search size={36} /></span>
               <h3>Browse Books</h3>
               <p>Explore and borrow books</p>
             </Link>
 
             <Link to="/wishlist" className="dashboard-card">
-              <span className="icon">❤️</span>
+              <span className="icon"><Heart size={36} /></span>
               <h3>Wishlist</h3>
               <p>Your saved books</p>
             </Link>
 
             <Link to="/borrowed" className="dashboard-card">
-              <span className="icon">📖</span>
+              <span className="icon"><BookOpen size={36} /></span>
               <h3>Borrowed Books</h3>
               <p>Currently borrowed books</p>
             </Link>
 
             <Link to="/fines" className="dashboard-card">
-              <span className="icon">💰</span>
+              <span className="icon"><CircleDollarSign size={36} /></span>
               <h3>My Fines</h3>
               <p>Pending & paid fines</p>
             </Link>
 
             <Link to="/profile" className="dashboard-card">
-              <span className="icon">👤</span>
+              <span className="icon"><User size={36} /></span>
               <h3>Profile</h3>
               <p>View & edit profile</p>
             </Link>

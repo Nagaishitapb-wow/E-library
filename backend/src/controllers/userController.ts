@@ -12,10 +12,22 @@ export async function getAllUsers(req: Request, res: Response) {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 50;
         const skip = (page - 1) * limit;
+        const { search } = req.query;
+
+        let query = {};
+        if (search) {
+            const searchRegex = new RegExp(search as string, "i");
+            query = {
+                $or: [
+                    { name: searchRegex },
+                    { email: searchRegex }
+                ]
+            };
+        }
 
         const [users, total] = await Promise.all([
-            User.find().select("-passwordHash").skip(skip).limit(limit),
-            User.countDocuments()
+            User.find(query).select("-passwordHash").skip(skip).limit(limit),
+            User.countDocuments(query)
         ]);
 
         // Aggregate stats for each user (Parallelize for performance)

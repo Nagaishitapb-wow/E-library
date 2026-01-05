@@ -207,16 +207,66 @@ export async function getAllBorrowedBooks(req: Request, res: Response) {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 50;
+    const { search, status, hasFine } = req.query;
     const skip = (page - 1) * limit;
 
+    let query: any = {};
+    const conditions: any[] = [];
+
+    // Status Filter
+    if (status === "returned") {
+      conditions.push({ returned: true });
+    } else if (status === "active") {
+      conditions.push({ returned: false, dueDate: { $gte: new Date() } });
+    } else if (status === "overdue") {
+      conditions.push({ returned: false, dueDate: { $lt: new Date() } });
+    }
+
+    // Fine Filter
+    if (hasFine === "true") {
+      conditions.push({
+        $or: [
+          { fineAmount: { $gt: 0 }, isFinePaid: false },
+          { returned: false, dueDate: { $lt: new Date() } }
+        ]
+      });
+    } else if (hasFine === "false") {
+      conditions.push({
+        $nor: [
+          { fineAmount: { $gt: 0 }, isFinePaid: false },
+          { returned: false, dueDate: { $lt: new Date() } }
+        ]
+      });
+    }
+
+    // Search logic
+    if (search) {
+      const searchRegex = new RegExp(search as string, "i");
+      const [matchingUsers, matchingBooks] = await Promise.all([
+        User.find({ $or: [{ name: searchRegex }, { email: searchRegex }] }).select("_id"),
+        Book.find({ title: searchRegex }).select("_id")
+      ]);
+
+      conditions.push({
+        $or: [
+          { userId: { $in: matchingUsers.map(u => u._id) } },
+          { bookId: { $in: matchingBooks.map(b => b._id) } }
+        ]
+      });
+    }
+
+    if (conditions.length > 0) {
+      query = conditions.length === 1 ? conditions[0] : { $and: conditions };
+    }
+
     const [borrowed, total] = await Promise.all([
-      Borrow.find()
+      Borrow.find(query)
         .populate("userId", "name email")
         .populate("bookId", "title")
         .sort({ borrowDate: -1 })
         .skip(skip)
         .limit(limit),
-      Borrow.countDocuments()
+      Borrow.countDocuments(query)
     ]);
 
     res.json({

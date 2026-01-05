@@ -27,20 +27,41 @@ export default function AdminBorrowManager() {
     const [borrowRecords, setBorrowRecords] = useState<BorrowRecord[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [fineFilter, setFineFilter] = useState("all");
+    const [isLoading, setIsLoading] = useState(false);
 
     const RECORDS_PER_PAGE = 30;
 
     useEffect(() => {
         fetchRecords();
-    }, [currentPage]);
+    }, [currentPage, statusFilter, fineFilter]);
+
+    // Use a separate effect for search with debounce
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (currentPage !== 1) setCurrentPage(1);
+            else fetchRecords();
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
     const fetchRecords = async () => {
         try {
-            const res = await api.get(`/borrow/all?page=${currentPage}&limit=${RECORDS_PER_PAGE}`);
+            setIsLoading(true);
+            let url = `/borrow/all?page=${currentPage}&limit=${RECORDS_PER_PAGE}`;
+            if (searchTerm) url += `&search=${searchTerm}`;
+            if (statusFilter !== "all") url += `&status=${statusFilter}`;
+            if (fineFilter !== "all") url += `&hasFine=${fineFilter === "hasFine"}`;
+
+            const res = await api.get(url);
             setBorrowRecords(res.data.data || res.data);
             setPagination(res.data.pagination);
         } catch (error) {
             toast.error("Failed to load borrow records");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -85,7 +106,62 @@ export default function AdminBorrowManager() {
 
     return (
         <div>
-            <h2>Borrow Monitoring</h2>
+            <div className="admin-header-row">
+                <h2>Borrow Monitoring</h2>
+            </div>
+
+            <div className="admin-filters-row">
+                <div className="admin-filter-group">
+                    <label>Search Users or Books</label>
+                    <input
+                        type="text"
+                        className="admin-filter-input"
+                        placeholder="Search name, email or title..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <div className="admin-filter-group fixed">
+                    <label>Status</label>
+                    <select
+                        className="admin-filter-select"
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                    >
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="returned">Returned</option>
+                    </select>
+                </div>
+                <div className="admin-filter-group fixed">
+                    <label>Fines</label>
+                    <select
+                        className="admin-filter-select"
+                        value={fineFilter}
+                        onChange={(e) => setFineFilter(e.target.value)}
+                    >
+                        <option value="all">All Records</option>
+                        <option value="hasFine">Has Fines</option>
+                        <option value="noFine">No Fines</option>
+                    </select>
+                </div>
+                <div style={{ display: "flex", alignItems: "flex-end" }}>
+                    <button
+                        className="admin-filter-reset"
+                        onClick={() => { setSearchTerm(""); setStatusFilter("all"); setFineFilter("all"); }}
+                    >
+                        Reset Filters
+                    </button>
+                </div>
+            </div>
+
+            {isLoading && (
+                <div style={{ textAlign: "center", padding: "10px", color: "var(--primary)", fontWeight: "600" }}>
+                    Updating search results...
+                </div>
+            )}
+
             <table className="admin-table">
                 <thead>
                     <tr>

@@ -24,6 +24,8 @@ export default function AdminUserManager() {
     const [users, setUsers] = useState<UserStats[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const USERS_PER_PAGE = 25;
 
@@ -31,13 +33,25 @@ export default function AdminUserManager() {
         fetchUsers();
     }, [currentPage]);
 
+    // Search with debounce
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (currentPage !== 1) setCurrentPage(1);
+            else fetchUsers();
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
     const fetchUsers = async () => {
         try {
-            const res = await api.get(`/user?page=${currentPage}&limit=${USERS_PER_PAGE}`);
+            setIsLoading(true);
+            const res = await api.get(`/user?page=${currentPage}&limit=${USERS_PER_PAGE}${searchTerm ? `&search=${searchTerm}` : ""}`);
             setUsers(res.data.data || res.data);
             setPagination(res.data.pagination);
         } catch (error) {
             toast.error("Failed to load users");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -48,7 +62,29 @@ export default function AdminUserManager() {
 
     return (
         <div>
-            <h2>User Management</h2>
+            <div className="admin-header-row">
+                <h2>User Management</h2>
+            </div>
+
+            <div className="admin-filters-row">
+                <div className="admin-filter-group">
+                    <label>Search Users</label>
+                    <input
+                        type="text"
+                        className="admin-filter-input"
+                        placeholder="Search name or email..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            {isLoading && (
+                <div style={{ textAlign: "center", padding: "10px", color: "var(--primary)", fontWeight: "600" }}>
+                    Updating search results...
+                </div>
+            )}
+
             <table className="admin-table">
                 <thead>
                     <tr>

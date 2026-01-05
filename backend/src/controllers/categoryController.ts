@@ -3,6 +3,7 @@ import { Category } from "../models/Category";
 import { Book } from "../models/Book";
 import Borrow from "../models/Borrow";
 import { escapeRegExp } from "../utils/regexHelper";
+import { logActivity } from "./activityController";
 
 export async function getAllCategories(req: Request, res: Response) {
     try {
@@ -63,6 +64,11 @@ export async function createCategory(req: Request, res: Response) {
         const category = new Category({ name, description });
         await category.save();
 
+        // Log Activity
+        if (req.user?._id) {
+            await logActivity(req.user._id, "Category Created", `Created category "${category.name}"`, "category");
+        }
+
         res.status(201).json(category);
     } catch (err) {
         console.error("Error creating category", err);
@@ -83,6 +89,11 @@ export async function updateCategory(req: Request, res: Response) {
 
         if (!category) {
             return res.status(404).json({ message: "Category not found" });
+        }
+
+        // Log Activity
+        if (req.user?._id) {
+            await logActivity(req.user._id, "Category Updated", `Updated category to "${name}"`, "category");
         }
 
         res.json(category);
@@ -116,6 +127,11 @@ export async function deleteCategory(req: Request, res: Response) {
 
         if (!category) {
             return res.status(404).json({ message: "Category not found" });
+        }
+
+        // Log Activity
+        if (req.user?._id) {
+            await logActivity(req.user._id, "Category Deleted", `Deleted category "${category.name}"`, "category");
         }
 
         res.json({ message: "Category deleted successfully" });

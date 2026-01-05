@@ -49,6 +49,47 @@ export default function AdminBookManager() {
         pdfUrl: ""
     });
 
+    const [selectedBookIds, setSelectedBookIds] = useState<string[]>([]);
+    const [bulkCategoryId, setBulkCategoryId] = useState("");
+    const [isBulkUpdating, setIsBulkUpdating] = useState(false);
+
+    const toggleSelectAll = () => {
+        if (selectedBookIds.length === filteredBooks.length) {
+            setSelectedBookIds([]);
+        } else {
+            setSelectedBookIds(filteredBooks.map(b => b._id));
+        }
+    };
+
+    const toggleSelectBook = (id: string) => {
+        setSelectedBookIds(prev =>
+            prev.includes(id) ? prev.filter(bid => bid !== id) : [...prev, id]
+        );
+    };
+
+    const handleBulkCategoryUpdate = async () => {
+        if (!bulkCategoryId) {
+            toast.warning("Please select a category first");
+            return;
+        }
+
+        try {
+            setIsBulkUpdating(true);
+            await api.patch("/books/bulk-update-category", {
+                bookIds: selectedBookIds,
+                categoryId: bulkCategoryId
+            });
+            toast.success("Categories updated successfully!");
+            setSelectedBookIds([]);
+            setBulkCategoryId("");
+            fetchBooks();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Bulk update failed");
+        } finally {
+            setIsBulkUpdating(false);
+        }
+    };
+
     const [isUploading, setIsUploading] = useState(false);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,9 +228,52 @@ export default function AdminBookManager() {
                 </div>
             </div>
 
+            {selectedBookIds.length > 0 && (
+                <div style={{
+                    background: "var(--primary-soft)",
+                    borderRadius: "12px",
+                    padding: "15px 20px",
+                    marginBottom: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "20px",
+                    border: "1px solid var(--primary-border)",
+                    animation: "slideDown 0.3s ease"
+                }}>
+                    <span style={{ fontWeight: "600", color: "var(--primary)" }}>
+                        {selectedBookIds.length} books selected
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "auto" }}>
+                        <select
+                            value={bulkCategoryId}
+                            onChange={(e) => setBulkCategoryId(e.target.value)}
+                            style={{ padding: "8px", borderRadius: "8px", border: "1px solid var(--border)" }}
+                        >
+                            <option value="">Move to Category...</option>
+                            {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                        </select>
+                        <button
+                            className="add-btn"
+                            style={{ padding: "8px 16px", marginBottom: 0 }}
+                            onClick={handleBulkCategoryUpdate}
+                            disabled={isBulkUpdating}
+                        >
+                            {isBulkUpdating ? "Updating..." : "Apply Bulk Changes"}
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <table className="admin-table">
                 <thead>
                     <tr>
+                        <th style={{ width: "40px" }}>
+                            <input
+                                type="checkbox"
+                                checked={filteredBooks.length > 0 && selectedBookIds.length === filteredBooks.length}
+                                onChange={toggleSelectAll}
+                            />
+                        </th>
                         <th>Title</th>
                         <th>Author</th>
                         <th>Category</th>
@@ -201,6 +285,13 @@ export default function AdminBookManager() {
                 <tbody>
                     {filteredBooks.map(book => (
                         <tr key={book._id}>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedBookIds.includes(book._id)}
+                                    onChange={() => toggleSelectBook(book._id)}
+                                />
+                            </td>
                             <td>{book.title}</td>
                             <td>{book.author}</td>
                             <td>{book.category?.name || "N/A"}</td>
@@ -224,7 +315,7 @@ export default function AdminBookManager() {
                     ))}
                     {filteredBooks.length === 0 && (
                         <tr>
-                            <td colSpan={6} style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
+                            <td colSpan={7} style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
                                 No books found matching your search.
                             </td>
                         </tr>

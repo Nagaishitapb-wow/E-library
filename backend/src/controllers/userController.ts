@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { User } from "../models/User";
 import Borrow from "../models/Borrow";
 import { Wishlist } from "../models/Wishlist";
+import { logActivity } from "./activityController";
 
 import bcrypt from "bcrypt";
 
@@ -139,6 +140,9 @@ export async function updateUserProfile(req: Request, res: Response) {
         const user = await User.findByIdAndUpdate(userId, { name, email }, { new: true }).select("-passwordHash");
         if (!user) return res.status(404).json({ message: "User not found" });
 
+        // Log Activity
+        await logActivity(userId, "Profile Updated", `Updated name to "${name}" and email to "${email}"`, "user");
+
         res.json({ message: "Profile updated", user });
     } catch (err: any) {
         res.status(500).json({ message: err.message || "Update failed" });
@@ -161,6 +165,9 @@ export async function changePassword(req: Request, res: Response) {
 
         user.passwordHash = await bcrypt.hash(newPassword, 10);
         await user.save();
+
+        // Log Activity
+        await logActivity(userId, "Password Changed", "User updated their password", "user");
 
         res.json({ message: "Password updated successfully" });
     } catch (err: any) {

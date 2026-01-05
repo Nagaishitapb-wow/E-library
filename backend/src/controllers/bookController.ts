@@ -4,6 +4,7 @@ import BorrowedBook from "../models/Borrow";
 import { escapeRegExp } from "../utils/regexHelper";
 import { Wishlist } from "../models/Wishlist";
 import { Notification } from "../models/Notification";
+import { logActivity } from "./activityController";
 
 export async function getAllBooks(req: Request, res: Response) {
   try {
@@ -146,6 +147,12 @@ export async function createBook(req: Request, res: Response) {
     });
 
     await newBook.save();
+
+    // Log Activity
+    if (req.user?._id) {
+      await logActivity(req.user._id, "Book Created", `Created book "${newBook.title}" by ${newBook.author}`, "book");
+    }
+
     res.status(201).json(newBook);
   } catch (err: any) {
     console.error("Create book error:", err);
@@ -181,6 +188,11 @@ export async function updateBook(req: Request, res: Response) {
       }
     }
 
+    // Log Activity
+    if (req.user?._id) {
+      await logActivity(req.user._id, "Book Updated", `Updated book "${newBook.title}"`, "book");
+    }
+
     res.json(newBook);
   } catch (err: any) {
     console.error("Update book error:", err);
@@ -203,10 +215,45 @@ export async function deleteBook(req: Request, res: Response) {
     const book = await Book.findByIdAndDelete(id);
     if (!book) return res.status(404).json({ message: "Book not found" });
 
+    // Log Activity
+    if (req.user?._id) {
+      await logActivity(req.user._id, "Book Deleted", `Deleted book "${book.title}"`, "book");
+    }
+
     res.json({ message: "Book deleted successfully" });
   } catch (err: any) {
     console.error("Delete book error:", err);
     res.status(500).json({ message: err.message || "Failed to delete book" });
   }
 }
+
+export async function bulkUpdateCategory(req: Request, res: Response) {
+  try {
+    const { bookIds, categoryId } = req.body;
+
+    if (!Array.isArray(bookIds) || bookIds.length === 0) {
+      return res.status(400).json({ message: "No books selected" });
+    }
+
+    if (!categoryId) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    await Book.updateMany(
+      { _id: { $in: bookIds } },
+      { $set: { category: categoryId } }
+    );
+
+    // Log Activity
+    if (req.user?._id) {
+      await logActivity(req.user._id, "Bulk Category Update", `Updated category for ${bookIds.length} books`, "book");
+    }
+
+    res.json({ message: `Successfully updated ${bookIds.length} books` });
+  } catch (err: any) {
+    console.error("Bulk update error:", err);
+    res.status(500).json({ message: err.message || "Bulk update failed" });
+  }
+}
+
 

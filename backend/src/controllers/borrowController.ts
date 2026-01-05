@@ -3,6 +3,7 @@ import Borrow from "../models/Borrow";
 import { Book } from "../models/Book";
 import { Notification } from "../models/Notification";
 import { User } from "../models/User";
+import { logActivity } from "./activityController";
 
 // ===================== BORROW BOOK =====================
 export async function borrowBook(req: Request, res: Response) {
@@ -43,6 +44,9 @@ export async function borrowBook(req: Request, res: Response) {
       book.status = "issued";
     }
     await book.save();
+
+    // Log Activity
+    await logActivity(userId, "Book Borrowed", `Borrowed book "${book.title}"`, "borrow");
 
     res.json({
       message: "Book issued successfully",
@@ -98,6 +102,9 @@ export async function requestReturn(req: Request, res: Response) {
       await Notification.insertMany(adminNotifications);
     }
 
+    // Log Activity
+    await logActivity(userId, "Return Requested", `Requested return for borrow record: ${record._id}`, "borrow");
+
     res.json({ message: "Return request submitted to admin" });
   } catch (err) {
     res.status(500).json({ message: "Request failed" });
@@ -144,11 +151,17 @@ export async function confirmReturn(req: Request, res: Response) {
       message: `✅ Return confirmed for "${book?.title}". Fine: ₹${record.fineAmount}`
     });
 
+    // Log Activity
+    if (req.user?._id) {
+      await logActivity(req.user._id, "Return Confirmed", `Confirmed return for borrow record: ${borrowId}`, "borrow");
+    }
+
     res.json({ message: "Return confirmed", fine: record.fineAmount });
   } catch (err) {
     res.status(500).json({ message: "Confirmation failed" });
   }
 }
+
 
 // ===================== GET USER BORROWED BOOKS =====================
 export async function getUserBorrowedBooks(req: Request, res: Response) {
@@ -258,6 +271,11 @@ export async function payFine(req: Request, res: Response) {
 
     record.isFinePaid = true;
     await record.save();
+
+    // Log Activity
+    if (req.user?._id) {
+      await logActivity(req.user._id, "Fine Paid", `Paid fine of ₹${record.fineAmount} for borrow record: ${borrowId}`, "fine");
+    }
 
     res.json({ message: "Fine paid successfully", fineAmount: record.fineAmount });
 

@@ -3,10 +3,11 @@ import AdminCategoryManager from "../components/AdminCategoryManager.tsx";
 import AdminBookManager from "../components/AdminBookManager.tsx";
 import AdminBorrowManager from "../components/AdminBorrowManager.tsx";
 import AdminUserManager from "../components/AdminUserManager.tsx";
+import AdminActivityLogs from "../components/AdminActivityLogs.tsx";
 import "../styles/adminDashboard.css";
 
 export default function AdminDashboard() {
-    const [activeTab, setActiveTab] = useState<"books" | "categories" | "borrowing" | "users">("books");
+    const [activeTab, setActiveTab] = useState<"books" | "categories" | "borrowing" | "users" | "logs">("books");
 
     return (
         <div className="admin-dashboard">
@@ -37,6 +38,12 @@ export default function AdminDashboard() {
                 >
                     Users
                 </button>
+                <button
+                    className={activeTab === "logs" ? "active" : ""}
+                    onClick={() => setActiveTab("logs")}
+                >
+                    Activity Logs
+                </button>
             </div>
 
             <div className="admin-content">
@@ -44,6 +51,7 @@ export default function AdminDashboard() {
                 {activeTab === "categories" && <AdminCategoryManager />}
                 {activeTab === "borrowing" && <AdminBorrowManager />}
                 {activeTab === "users" && <AdminUserManager />}
+                {activeTab === "logs" && <AdminActivityLogs />}
             </div>
         </div>
     );

@@ -13,6 +13,7 @@ interface BorrowRecord {
     returnRequested: boolean;
     returnDate?: string;
     fineAmount: number;
+    isFinePaid: boolean;
 }
 
 interface PaginationInfo {
@@ -66,6 +67,22 @@ export default function AdminBorrowManager() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const calculateFine = (record: BorrowRecord) => {
+        if (record.returned) return record.fineAmount;
+
+        const dueDate = new Date(record.dueDate);
+        const now = new Date();
+
+        if (now > dueDate) {
+            const lateTime = now.getTime() - dueDate.getTime();
+            const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+            if (lateDays > 0) {
+                return 50 + ((lateDays - 1) * 5);
+            }
+        }
+        return 0;
+    };
+
     return (
         <div>
             <h2>Borrow Monitoring</h2>
@@ -78,55 +95,66 @@ export default function AdminBorrowManager() {
                         <th>Due Date</th>
                         <th>Status</th>
                         <th>Fine</th>
+                        <th>Payment</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {borrowRecords.map(record => (
-                        <tr key={record._id}>
-                            <td>
-                                <div style={{ fontWeight: "bold" }}>{record.userId?.name || "Unknown"}</div>
-                                <div style={{ fontSize: "0.85rem", color: "#6b7280" }}>{record.userId?.email}</div>
-                            </td>
-                            <td>{record.bookId?.title || "Deleted Book"}</td>
-                            <td>{new Date(record.borrowDate).toLocaleDateString()}</td>
-                            <td>{new Date(record.dueDate).toLocaleDateString()}</td>
-                            <td>{calculateStatus(record)}</td>
-                            <td>
-                                {record.fineAmount > 0
-                                    ? <span style={{ color: "red" }}>₹{record.fineAmount}</span>
-                                    : "₹0"}
-                            </td>
-                            <td>
-                                {!record.returned && record.returnRequested && (
-                                    <button
-                                        onClick={() => handleConfirmReturn(record._id)}
-                                        style={{
-                                            background: "#10b981",
-                                            color: "white",
-                                            border: "none",
-                                            padding: "6px 12px",
-                                            borderRadius: "4px",
-                                            cursor: "pointer",
-                                            fontSize: "0.85rem",
-                                            fontWeight: "bold"
-                                        }}
-                                    >
-                                        ✅ Confirm Return
-                                    </button>
-                                )}
-                                {!record.returned && !record.returnRequested && (
-                                    <span style={{ fontSize: "0.85rem", color: "#6b7280" }}>Active</span>
-                                )}
-                                {record.returned && (
-                                    <span style={{ fontSize: "0.85rem", color: "#10b981" }}>Completed</span>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
+                    {borrowRecords.map(record => {
+                        const fine = calculateFine(record);
+                        return (
+                            <tr key={record._id}>
+                                <td>
+                                    <div style={{ fontWeight: "bold" }}>{record.userId?.name || "Unknown"}</div>
+                                    <div style={{ fontSize: "0.85rem", color: "#6b7280" }}>{record.userId?.email}</div>
+                                </td>
+                                <td>{record.bookId?.title || "Deleted Book"}</td>
+                                <td>{new Date(record.borrowDate).toLocaleDateString()}</td>
+                                <td>{new Date(record.dueDate).toLocaleDateString()}</td>
+                                <td>{calculateStatus(record)}</td>
+                                <td>
+                                    {fine > 0
+                                        ? <span style={{ color: "red" }}>₹{fine}</span>
+                                        : "₹0"}
+                                </td>
+                                <td>
+                                    {record.isFinePaid ? (
+                                        <span style={{ color: "green", fontWeight: "bold" }}>Paid</span>
+                                    ) : (
+                                        fine > 0 ? <span style={{ color: "red", fontWeight: "bold" }}>Pending</span> : "-"
+                                    )}
+                                </td>
+                                <td>
+                                    {!record.returned && record.returnRequested && (
+                                        <button
+                                            onClick={() => handleConfirmReturn(record._id)}
+                                            style={{
+                                                background: "#10b981",
+                                                color: "white",
+                                                border: "none",
+                                                padding: "6px 12px",
+                                                borderRadius: "4px",
+                                                cursor: "pointer",
+                                                fontSize: "0.85rem",
+                                                fontWeight: "bold"
+                                            }}
+                                        >
+                                            ✅ Confirm Return
+                                        </button>
+                                    )}
+                                    {!record.returned && !record.returnRequested && (
+                                        <span style={{ fontSize: "0.85rem", color: "#6b7280" }}>Active</span>
+                                    )}
+                                    {record.returned && (
+                                        <span style={{ fontSize: "0.85rem", color: "#10b981" }}>Completed</span>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
                     {borrowRecords.length === 0 && (
                         <tr>
-                            <td colSpan={7} style={{ textAlign: "center", padding: "20px" }}>No borrow records found.</td>
+                            <td colSpan={8} style={{ textAlign: "center", padding: "20px" }}>No borrow records found.</td>
                         </tr>
                     )}
                 </tbody>

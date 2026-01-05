@@ -65,6 +65,17 @@ export async function requestReturn(req: Request, res: Response) {
     const record = await Borrow.findOne({ _id: borrowId, userId, returned: false });
     if (!record) return res.status(404).json({ message: "Borrow record not found" });
 
+    // Check for overdue & unpaid fine
+    const now = new Date();
+    if (now > record.dueDate && !record.isFinePaid) {
+      // Double check it's actually fine-able (more than 0 days late)
+      const lateTime = now.getTime() - record.dueDate.getTime();
+      const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+      if (lateDays > 0) {
+        return res.status(400).json({ message: "Cannot return overdue book. Please pay the fine first." });
+      }
+    }
+
     if (record.returnRequested) {
       return res.status(400).json({ message: "Return already requested" });
     }
@@ -107,13 +118,14 @@ export async function confirmReturn(req: Request, res: Response) {
     record.returnRequested = false;
     record.returnDate = new Date();
 
-    // Calculate fine
+    // Calculate fine: Flat 50 for first overdue day + 5 for each subsequent day
     if (record.returnDate > record.dueDate) {
-      const lateDays = Math.ceil(
-        (record.returnDate.getTime() - record.dueDate.getTime()) /
-        (1000 * 60 * 60 * 24)
-      );
-      record.fineAmount = lateDays * 10;
+      const lateTime = record.returnDate.getTime() - record.dueDate.getTime();
+      const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+
+      if (lateDays > 0) {
+        record.fineAmount = 50 + ((lateDays - 1) * 5);
+      }
     }
 
     await record.save();
@@ -148,11 +160,32 @@ export async function getUserBorrowedBooks(req: Request, res: Response) {
     const books = await Borrow.find({
       userId: req.user._id,
       returned: false,
-    }).populate("bookId", "title author coverImage stock status");
+    }).populate("bookId", "title author coverImage stock status").lean();
 
-    res.json(books);
+    // Calculate dynamic fine for active books
+    const booksWithFines = books.map((b: any) => {
+      try {
+        if (!b.isFinePaid && b.dueDate) {
+          const now = new Date();
+          const dueDate = new Date(b.dueDate);
+          if (!isNaN(dueDate.getTime()) && now > dueDate) {
+            const lateTime = now.getTime() - dueDate.getTime();
+            const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+            if (lateDays > 0) {
+              b.fineAmount = 50 + ((lateDays - 1) * 5);
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Error calculating fine for book:", b._id, e);
+      }
+      return b;
+    });
+
+    res.json(booksWithFines);
 
   } catch (err) {
+    console.error("Error in getUserBorrowedBooks:", err);
     res.status(500).json({ message: "Fetch failed" });
   }
 }
@@ -204,18 +237,68 @@ export async function payFine(req: Request, res: Response) {
       return res.status(404).json({ message: "Borrow record not found" });
     }
 
+    // Calculate current fine before payment to ensure accurate record
+    if (record.returnDate && record.returnDate > record.dueDate) {
+      // Already returned, fine is fixed
+    } else {
+      // Active borrow, calculate fine up to now
+      const now = new Date();
+      if (now > record.dueDate) {
+        const lateTime = now.getTime() - record.dueDate.getTime();
+        const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+        if (lateDays > 0) {
+          record.fineAmount = 50 + ((lateDays - 1) * 5);
+        }
+      }
+    }
+
     if (record.fineAmount <= 0) {
       return res.status(400).json({ message: "No fine to pay" });
     }
 
-    // "Fake" payment logic: just clear the fine
-    record.fineAmount = 0;
+    record.isFinePaid = true;
     await record.save();
 
-    res.json({ message: "Fine paid successfully" });
+    res.json({ message: "Fine paid successfully", fineAmount: record.fineAmount });
 
   } catch (err) {
     console.error("Pay fine error:", err);
     res.status(500).json({ message: "Payment failed" });
   }
 }
+
+// ===================== GET USER PENDING FINES =====================
+export async function getUserFines(req: Request, res: Response) {
+  try {
+    if (!req.user?._id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const unpaidBorrows = await Borrow.find({
+      userId: req.user._id,
+      isFinePaid: { $ne: true }
+    }).populate("bookId", "title author coverImage").lean();
+
+    const now = new Date();
+    const withCalculatedFines = unpaidBorrows.map((b: any) => {
+      // If book not returned, we calculate dynamic fine if overdue
+      if (!b.returned) {
+        const dueDate = new Date(b.dueDate);
+        if (now > dueDate) {
+          const lateTime = now.getTime() - dueDate.getTime();
+          const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+          if (lateDays > 0) {
+            b.fineAmount = 50 + ((lateDays - 1) * 5);
+          }
+        }
+      }
+      return b;
+    }).filter((b: any) => b.fineAmount > 0);
+
+    res.json(withCalculatedFines);
+  } catch (err) {
+    console.error("Error in getUserFines:", err);
+    res.status(500).json({ message: "Fetch failed" });
+  }
+}
+

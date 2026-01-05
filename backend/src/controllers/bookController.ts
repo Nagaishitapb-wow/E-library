@@ -191,6 +191,15 @@ export async function updateBook(req: Request, res: Response) {
 export async function deleteBook(req: Request, res: Response) {
   try {
     const { id } = req.params;
+
+    // Check if the book is currently borrowed
+    const activeBorrow = await BorrowedBook.findOne({ bookId: id, returned: false });
+    if (activeBorrow) {
+      return res.status(400).json({
+        message: "This book is currently borrowed by a user and cannot be deleted."
+      });
+    }
+
     const book = await Book.findByIdAndDelete(id);
     if (!book) return res.status(404).json({ message: "Book not found" });
 

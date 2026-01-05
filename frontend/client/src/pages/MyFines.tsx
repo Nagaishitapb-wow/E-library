@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMyBorrowedBooks, payFine } from "../api/borrow";
+import { getMyFines, payFine } from "../api/borrow";
 import { toast } from "react-toastify";
 import PaymentModal, { type PaymentDetails } from "../components/PaymentModal";
 import "../styles/borrowed.css"; // Reusing borrowed books styles for consistency
@@ -30,19 +30,15 @@ export default function MyFines() {
     }, []);
 
     function loadFines() {
-        getMyBorrowedBooks()
-            .then(books => {
-                const withFines = books.filter((b: BorrowedBook) => b.fineAmount > 0);
-                setFines(withFines);
+        getMyFines()
+            .then((books: BorrowedBook[]) => {
+                setFines(books);
             })
             .catch(() => toast.error("Failed to load fines"));
     }
 
     async function handlePayFine(_details: PaymentDetails) {
         if (!selectedFineBook) return;
-
-        // Simulate processing
-        await new Promise(resolve => setTimeout(resolve, 1500));
 
         try {
             await payFine(selectedFineBook._id);
@@ -76,7 +72,7 @@ export default function MyFines() {
 
             <div className="borrowed-grid">
                 {fines.map(b => (
-                    <div className="borrow-card" key={b._id} style={{ borderColor: "#ef5350" }}>
+                    <div className="borrow-card" key={b._id} style={{ borderColor: "var(--border)" }}>
                         <img
                             src={b.bookId.coverImage || PLACEHOLDER_IMAGE}
                             alt={b.bookId.title}
@@ -93,7 +89,7 @@ export default function MyFines() {
                         </p>
 
                         <div className="fine-section">
-                            <p className="fine" style={{ fontSize: "1.2rem" }}>Fine: ₹{b.fineAmount}</p>
+                            <p className="fine" style={{ fontSize: "1.2rem", color: "var(--primary)" }}>Fine: ₹{b.fineAmount}</p>
                             <button
                                 className="pay-fine-btn"
                                 onClick={() => setSelectedFineBook(b)}

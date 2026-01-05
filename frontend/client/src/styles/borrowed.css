@@ -110,18 +110,20 @@
 
 .pay-fine-btn {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background: #ef4444;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .pay-fine-btn:hover {
   background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* RETURN BUTTON */

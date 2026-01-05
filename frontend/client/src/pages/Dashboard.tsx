@@ -83,10 +83,10 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className={`stat-card ${stats.totalFines > 0 ? 'fines-warning' : ''}`}>
+              <div className="stat-card">
                 <span className="stat-icon">💰</span>
                 <div className="stat-info">
-                  <h3 className={stats.totalFines > 0 ? 'text-danger' : 'text-success'}>
+                  <h3>
                     ₹{stats.totalFines}
                   </h3>
                   <p>Total Fines</p>

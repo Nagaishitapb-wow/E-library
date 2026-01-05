@@ -9,6 +9,10 @@ export async function getMyBorrowedBooks() {
   return api.get("/borrow/mybooks").then((res: any) => res.data);
 }
 
+export async function getMyFines() {
+  return api.get("/borrow/myfines").then((res: any) => res.data);
+}
+
 // Request to return a book
 export async function requestReturn(borrowId: string) {
   return api.post(`/borrow/request-return/${borrowId}`).then((res: any) => res.data);

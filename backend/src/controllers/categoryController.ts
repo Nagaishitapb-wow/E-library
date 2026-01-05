@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import { Category } from "../models/Category";
+import { Book } from "../models/Book";
+import Borrow from "../models/Borrow";
 import { escapeRegExp } from "../utils/regexHelper";
 
 export async function getAllCategories(req: Request, res: Response) {
@@ -93,6 +95,23 @@ export async function updateCategory(req: Request, res: Response) {
 export async function deleteCategory(req: Request, res: Response) {
     try {
         const { id } = req.params;
+
+        // 1. Find all books in this category
+        const booksInCategory = await Book.find({ category: id }).select("_id");
+        const bookIds = booksInCategory.map(b => b._id);
+
+        // 2. Check if any of these books are currently borrowed
+        const activeBorrow = await Borrow.findOne({
+            bookId: { $in: bookIds },
+            returned: false
+        });
+
+        if (activeBorrow) {
+            return res.status(400).json({
+                message: "This category contains books that are currently borrowed and cannot be deleted."
+            });
+        }
+
         const category = await Category.findByIdAndDelete(id);
 
         if (!category) {

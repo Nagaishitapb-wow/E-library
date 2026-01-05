@@ -20,14 +20,29 @@ export async function getAllUsers(req: Request, res: Response) {
         // Aggregate stats for each user (Parallelize for performance)
         const userStats = await Promise.all(
             users.map(async (user) => {
-                const [borrowedCount, fines, wishlist] = await Promise.all([
+                const [activeBorrows, unpaidBorrows, wishlistCount] = await Promise.all([
                     Borrow.countDocuments({ userId: user._id, returned: false }),
-                    Borrow.aggregate([
-                        { $match: { userId: user._id } },
-                        { $group: { _id: null, total: { $sum: "$fineAmount" } } },
-                    ]),
+                    Borrow.find({ userId: user._id, isFinePaid: { $ne: true } }),
                     Wishlist.countDocuments({ userId: user._id }),
                 ]);
+
+                let totalFines = 0;
+                const now = new Date();
+
+                unpaidBorrows.forEach(b => {
+                    if (b.returned) {
+                        totalFines += b.fineAmount;
+                    } else {
+                        const dueDate = new Date(b.dueDate);
+                        if (now > dueDate) {
+                            const lateTime = now.getTime() - dueDate.getTime();
+                            const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+                            if (lateDays > 0) {
+                                totalFines += 50 + ((lateDays - 1) * 5);
+                            }
+                        }
+                    }
+                });
 
                 return {
                     _id: user._id,
@@ -35,9 +50,9 @@ export async function getAllUsers(req: Request, res: Response) {
                     email: user.email,
                     role: user.role,
                     createdAt: user.createdAt,
-                    activeBorrows: borrowedCount,
-                    totalFines: fines[0]?.total || 0,
-                    wishlistCount: wishlist || 0,
+                    activeBorrows,
+                    totalFines,
+                    wishlistCount: wishlistCount || 0,
                 };
             })
         );
@@ -67,22 +82,44 @@ export async function getUserProfile(req: Request, res: Response) {
         if (!user) return res.status(404).json({ message: "User not found" });
 
         // Statistics
-        const [totalBorrowed, currentlyBorrowed, fines, wishlist] = await Promise.all([
+        const [totalBorrowed, currentlyBorrowed, unpaidBorrows, wishlist] = await Promise.all([
             Borrow.countDocuments({ userId }),
             Borrow.countDocuments({ userId, returned: false }),
-            Borrow.aggregate([
-                { $match: { userId } },
-                { $group: { _id: null, total: { $sum: "$fineAmount" } } },
-            ]),
+            Borrow.find({ userId, isFinePaid: { $ne: true } }),
             Wishlist.countDocuments({ userId }),
         ]);
+
+        let totalFines = 0;
+        const now = new Date();
+
+        console.log(`[DEBUG] Found ${unpaidBorrows.length} unpaid borrows for user ${userId}`);
+
+        unpaidBorrows.forEach(b => {
+            if (b.returned) {
+                console.log(`[DEBUG] Borrow ${b._id} (returned): fineAmount = ${b.fineAmount}`);
+                totalFines += b.fineAmount;
+            } else {
+                const dueDate = new Date(b.dueDate);
+                if (now > dueDate) {
+                    const lateTime = now.getTime() - dueDate.getTime();
+                    const lateDays = Math.ceil(lateTime / (1000 * 60 * 60 * 24));
+                    if (lateDays > 0) {
+                        const dynamicFine = 50 + ((lateDays - 1) * 5);
+                        console.log(`[DEBUG] Borrow ${b._id} (active): dynamicFine = ${dynamicFine}`);
+                        totalFines += dynamicFine;
+                    }
+                }
+            }
+        });
+
+        console.log(`[DEBUG] Final totalFines for dashboard: ₹${totalFines}`);
 
         res.json({
             user,
             statistics: {
                 totalBorrowed,
                 currentlyBorrowed,
-                totalFines: fines[0]?.total || 0,
+                totalFines,
                 wishlistCount: wishlist || 0,
             }
         });

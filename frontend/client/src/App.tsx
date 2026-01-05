@@ -28,6 +28,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import MyFines from "./pages/MyFines";
+import FinePayment from "./pages/FinePayment";
 import { ThemeProvider } from "./context/ThemeContext";
 
 import ScrollToTop from "./components/ScrollToTop";
@@ -75,6 +76,7 @@ const App = () => {
             <Route path="/fines" element={<ProtectedRoute><MyFines /></ProtectedRoute>} />
             <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/fine/:borrowId" element={<ProtectedRoute><FinePayment /></ProtectedRoute>} />
 
             {/* Admin Routes */}
             <Route element={<AdminRoute />}>

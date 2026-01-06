@@ -31,6 +31,11 @@ export default function BookDetails() {
   const [userRating, setUserRating] = useState(0);
   const [comment, setComment] = useState("");
 
+  // Get user from localStorage to check if admin
+  const userJson = localStorage.getItem("user");
+  const user = userJson ? JSON.parse(userJson) : null;
+  const isAdmin = user?.role === "admin";
+
   useEffect(() => {
     api.get(`/books/${id}`)
       .then((res: { data: Book }) => setBook(res.data))
@@ -96,7 +101,7 @@ export default function BookDetails() {
           {/* BORROW BUTTON */}
           <button
             className="btn primary"
-            disabled={book.stock < 1}
+            disabled={book.stock < 1 || isAdmin}
             onClick={async () => {
               try {
                 await borrowBook(book._id);
@@ -111,12 +116,14 @@ export default function BookDetails() {
                 }
               }
             }}
+            title={isAdmin ? "Admins cannot borrow books" : ""}
           >
-            {book.stock > 0 ? "Borrow 📘" : "Out of Stock 🚫"}
+            {isAdmin ? "Admin Account 🔒" : book.stock > 0 ? "Borrow 📘" : "Out of Stock 🚫"}
           </button>
 
           <button
             className="btn secondary"
+            disabled={isAdmin}
             onClick={async () => {
               try {
                 await addToWishlist(book._id);
@@ -130,6 +137,7 @@ export default function BookDetails() {
                 }
               }
             }}
+            title={isAdmin ? "Admins cannot add to wishlist" : ""}
           >
             ❤️ Add to Wishlist
           </button>

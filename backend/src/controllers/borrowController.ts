@@ -26,6 +26,12 @@ export async function borrowBook(req: Request, res: Response) {
       return res.status(400).json({ message: "You have already borrowed this book" });
     }
 
+    // Check borrow limit (maximum 5 active borrows)
+    const activeBorrowsCount = await Borrow.countDocuments({ userId, returned: false });
+    if (activeBorrowsCount >= 5) {
+      return res.status(400).json({ message: "You have reached the maximum borrow limit of 5 books. Please return a book before borrowing more." });
+    }
+
     if (book.stock < 1) {
       return res.status(400).json({ message: "Book is out of stock" });
     }

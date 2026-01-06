@@ -149,8 +149,8 @@ export default function Home() {
       {/* STATS SECTION */}
       <section className="stats-section">
         <div className="section-header">
-          <h2 style={{ color: 'white' }}>Library Growth</h2>
-          <p style={{ color: 'rgba(255,255,255,0.8)' }}>Real-time impact of our community and collection</p>
+          <h2>Library Growth</h2>
+          <p>Real-time impact of our community and collection</p>
         </div>
         <div className="stats-grid">
           <div className="stat-item">
